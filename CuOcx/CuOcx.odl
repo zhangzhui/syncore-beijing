@@ -32,6 +32,12 @@ library CUOCXLib
 			// NOTE - ClassWizard will maintain method information here.
 			//    Use extreme caution when editing this section.
 			//{{AFX_ODL_METHOD(CCuOcxCtrl)
+			[id(1)] void SetPassWord(BSTR strPassWord);
+			[id(2)] void SetUserName(BSTR strUserName);
+			[id(3)] void SetServerIPAddr(BSTR strIPAddr);
+			[id(4)] void SetServerPort(long nPort);
+			[id(5)] void SetWorkDir(BSTR strWorkDir);
+			[id(6)] void SetCameraID(BSTR strCameraID);
 			//}}AFX_ODL_METHOD
 
 			[id(DISPID_ABOUTBOX)] void AboutBox();

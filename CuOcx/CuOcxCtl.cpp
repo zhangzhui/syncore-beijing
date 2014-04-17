@@ -33,8 +33,12 @@ END_MESSAGE_MAP()
 
 BEGIN_DISPATCH_MAP(CCuOcxCtrl, COleControl)
 	//{{AFX_DISPATCH_MAP(CCuOcxCtrl)
-	// NOTE - ClassWizard will add and remove dispatch map entries
-	//    DO NOT EDIT what you see in these blocks of generated code !
+	DISP_FUNCTION(CCuOcxCtrl, "SetPassWord", SetPassWord, VT_EMPTY, VTS_BSTR)
+	DISP_FUNCTION(CCuOcxCtrl, "SetUserName", SetUserName, VT_EMPTY, VTS_BSTR)
+	DISP_FUNCTION(CCuOcxCtrl, "SetServerIPAddr", SetServerIPAddr, VT_EMPTY, VTS_BSTR)
+	DISP_FUNCTION(CCuOcxCtrl, "SetServerPort", SetServerPort, VT_EMPTY, VTS_I4)
+	DISP_FUNCTION(CCuOcxCtrl, "SetWorkDir", SetWorkDir, VT_EMPTY, VTS_BSTR)
+	DISP_FUNCTION(CCuOcxCtrl, "SetCameraID", SetCameraID, VT_EMPTY, VTS_BSTR)
 	//}}AFX_DISPATCH_MAP
 	DISP_FUNCTION_ID(CCuOcxCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 END_DISPATCH_MAP()
@@ -151,8 +155,9 @@ void CCuOcxCtrl::OnDraw(
 			CDC* pdc, const CRect& rcBounds, const CRect& rcInvalid)
 {
 	// TODO: Replace the following code with your own drawing code.
+	CRect rc = rcBounds;
 	pdc->FillRect(rcBounds, CBrush::FromHandle((HBRUSH)GetStockObject(WHITE_BRUSH)));
-	pdc->Ellipse(rcBounds);
+	pdc->DrawText("This is a CuOcx control.", &rc, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 }
 
 
@@ -192,3 +197,39 @@ void CCuOcxCtrl::AboutBox()
 
 /////////////////////////////////////////////////////////////////////////////
 // CCuOcxCtrl message handlers
+
+void CCuOcxCtrl::SetPassWord(LPCTSTR strPassWord) 
+{
+	// TODO: Add your dispatch handler code here
+	m_strPassWord = strPassWord;
+}
+
+void CCuOcxCtrl::SetUserName(LPCTSTR strUserName) 
+{
+	// TODO: Add your dispatch handler code here
+	m_strUserName = strUserName;
+}
+
+void CCuOcxCtrl::SetServerIPAddr(LPCTSTR strIPAddr) 
+{
+	// TODO: Add your dispatch handler code here
+	m_strServerIPAddr = strIPAddr;
+}
+
+void CCuOcxCtrl::SetServerPort(long nPort) 
+{
+	// TODO: Add your dispatch handler code here
+	m_nServerPort = nPort;
+}
+
+void CCuOcxCtrl::SetWorkDir(LPCTSTR strWorkDir) 
+{
+	// TODO: Add your dispatch handler code here
+	m_strWorkDir = strWorkDir;
+}
+
+void CCuOcxCtrl::SetCameraID(LPCTSTR strCameraID) 
+{
+	// TODO: Add your dispatch handler code here
+	m_strCameraID = strCameraID;
+}

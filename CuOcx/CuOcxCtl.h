@@ -13,6 +13,13 @@
 class CCuOcxCtrl : public COleControl
 {
 	DECLARE_DYNCREATE(CCuOcxCtrl)
+private:
+	CString m_strUserName;
+	CString m_strPassWord;
+	CString m_strServerIPAddr;
+	CString m_nServerPort;
+	CString m_strWorkDir;
+	CString m_strCameraID;
 
 // Constructor
 public:
@@ -45,8 +52,12 @@ protected:
 
 // Dispatch maps
 	//{{AFX_DISPATCH(CCuOcxCtrl)
-		// NOTE - ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
+	afx_msg void SetPassWord(LPCTSTR strPassWord);
+	afx_msg void SetUserName(LPCTSTR strUserName);
+	afx_msg void SetServerIPAddr(LPCTSTR strIPAddr);
+	afx_msg void SetServerPort(long nPort);
+	afx_msg void SetWorkDir(LPCTSTR strWorkDir);
+	afx_msg void SetCameraID(LPCTSTR strCameraID);
 	//}}AFX_DISPATCH
 	DECLARE_DISPATCH_MAP()
 
@@ -54,8 +65,6 @@ protected:
 
 // Event maps
 	//{{AFX_EVENT(CCuOcxCtrl)
-		// NOTE - ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_EVENT
 	DECLARE_EVENT_MAP()
 
@@ -63,8 +72,12 @@ protected:
 public:
 	enum {
 	//{{AFX_DISP_ID(CCuOcxCtrl)
-		// NOTE: ClassWizard will add and remove enumeration elements here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
+	dispidSetPassWord = 1L,
+	dispidSetUserName = 2L,
+	dispidSetServerIPAddr = 3L,
+	dispidSetServerPort = 4L,
+	dispidSetWorkDir = 5L,
+	dispidSetCameraID = 6L,
 	//}}AFX_DISP_ID
 	};
 };
