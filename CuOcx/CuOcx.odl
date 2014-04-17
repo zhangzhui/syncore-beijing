@@ -1,0 +1,69 @@
+// CuOcx.odl : type library source for ActiveX Control project.
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (CuOcx.tlb) that will become a resource in
+// CuOcx.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(5A9D633E-C8A8-4882-89DF-B61282DB610F), version(1.0),
+  helpfile("CuOcx.hlp"),
+  helpstring("CuOcx ActiveX Control module"),
+  control ]
+library CUOCXLib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	//  Primary dispatch interface for CCuOcxCtrl
+
+	[ uuid(08A5B809-0274-4F5E-A688-B6609F9D737D),
+	  helpstring("Dispatch interface for CuOcx Control"), hidden ]
+	dispinterface _DCuOcx
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CCuOcxCtrl)
+			//}}AFX_ODL_PROP
+
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CCuOcxCtrl)
+			//}}AFX_ODL_METHOD
+
+			[id(DISPID_ABOUTBOX)] void AboutBox();
+	};
+
+	//  Event dispatch interface for CCuOcxCtrl
+
+	[ uuid(971CD979-AF9D-4CCD-80E8-86CF9D31736F),
+	  helpstring("Event interface for CuOcx Control") ]
+	dispinterface _DCuOcxEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			// NOTE - ClassWizard will maintain event information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_EVENT(CCuOcxCtrl)
+			//}}AFX_ODL_EVENT
+	};
+
+	//  Class information for CCuOcxCtrl
+
+	[ uuid(A0FBEFFB-146C-4174-858B-3BB5367C0207),
+	  helpstring("CuOcx Control"), control ]
+	coclass CuOcx
+	{
+		[default] dispinterface _DCuOcx;
+		[default, source] dispinterface _DCuOcxEvents;
+	};
+
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
