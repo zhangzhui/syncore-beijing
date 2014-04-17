@@ -220,6 +220,10 @@ SOURCE=.\CuOcxPpg.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MainPage.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
 # End Source File
@@ -238,6 +242,10 @@ SOURCE=.\CuOcxCtl.h
 # Begin Source File
 
 SOURCE=.\CuOcxPpg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MainPage.h
 # End Source File
 # Begin Source File
 
