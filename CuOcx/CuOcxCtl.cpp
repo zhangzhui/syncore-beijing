@@ -4,6 +4,7 @@
 #include "CuOcx.h"
 #include "CuOcxCtl.h"
 #include "CuOcxPpg.h"
+#include "MainPage.h"
 
 
 #ifdef _DEBUG
@@ -21,8 +22,7 @@ IMPLEMENT_DYNCREATE(CCuOcxCtrl, COleControl)
 
 BEGIN_MESSAGE_MAP(CCuOcxCtrl, COleControl)
 	//{{AFX_MSG_MAP(CCuOcxCtrl)
-	// NOTE - ClassWizard will add and remove message map entries
-	//    DO NOT EDIT what you see in these blocks of generated code !
+	ON_WM_SIZE()
 	//}}AFX_MSG_MAP
 	ON_OLEVERB(AFX_IDS_VERB_PROPERTIES, OnProperties)
 END_MESSAGE_MAP()
@@ -39,6 +39,7 @@ BEGIN_DISPATCH_MAP(CCuOcxCtrl, COleControl)
 	DISP_FUNCTION(CCuOcxCtrl, "SetServerPort", SetServerPort, VT_EMPTY, VTS_I4)
 	DISP_FUNCTION(CCuOcxCtrl, "SetWorkDir", SetWorkDir, VT_EMPTY, VTS_BSTR)
 	DISP_FUNCTION(CCuOcxCtrl, "SetCameraID", SetCameraID, VT_EMPTY, VTS_BSTR)
+	DISP_FUNCTION(CCuOcxCtrl, "Init", Init, VT_EMPTY, VTS_NONE)
 	//}}AFX_DISPATCH_MAP
 	DISP_FUNCTION_ID(CCuOcxCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 END_DISPATCH_MAP()
@@ -136,6 +137,7 @@ CCuOcxCtrl::CCuOcxCtrl()
 	InitializeIIDs(&IID_DCuOcx, &IID_DCuOcxEvents);
 
 	// TODO: Initialize your control's instance data here.
+	m_pMainPage = NULL;
 }
 
 
@@ -145,6 +147,10 @@ CCuOcxCtrl::CCuOcxCtrl()
 CCuOcxCtrl::~CCuOcxCtrl()
 {
 	// TODO: Cleanup your control's instance data here.
+	if (m_pMainPage && m_pMainPage->GetSafeHwnd())
+	{
+		m_pMainPage->PostMessage(WM_DESTROY, NULL, NULL);
+	}
 }
 
 
@@ -232,4 +238,45 @@ void CCuOcxCtrl::SetCameraID(LPCTSTR strCameraID)
 {
 	// TODO: Add your dispatch handler code here
 	m_strCameraID = strCameraID;
+}
+
+void CCuOcxCtrl::Init() 
+{
+	// TODO: Add your dispatch handler code here
+	m_pMainPage = new CMainPage;
+	if (m_pMainPage == NULL)
+	{
+		MessageBox(_T("申请界面内存失败！"));
+		return;
+	}
+
+	m_pMainPage->SetPassWord(m_strPassWord);
+	m_pMainPage->SetUserName(m_strUserName);
+	m_pMainPage->SetServerIPAddr(m_strServerIPAddr);
+	m_pMainPage->SetServerPort(m_nServerPort);
+	m_pMainPage->SetWorkDir(m_strWorkDir);
+	m_pMainPage->SetCameraID(m_strCameraID);
+
+	if (m_pMainPage->Create(IDD_PROPPAGE_MAIN, this))
+	{
+		CRect rc;
+		GetClientRect(&rc);
+		m_pMainPage->MoveWindow(&rc, TRUE);
+		m_pMainPage->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		MessageBox(_T("创建界面失败！"));
+	}
+}
+
+void CCuOcxCtrl::OnSize(UINT nType, int cx, int cy) 
+{
+	COleControl::OnSize(nType, cx, cy);
+	
+	// TODO: Add your message handler code here
+	if (m_pMainPage && m_pMainPage->GetSafeHwnd())
+	{
+		m_pMainPage->MoveWindow(0, 0, cx, cy, TRUE);
+	}
 }

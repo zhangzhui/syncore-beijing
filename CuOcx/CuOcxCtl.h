@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCuOcxCtrl : See CuOcxCtl.cpp for implementation.
 
+class CMainPage;
 class CCuOcxCtrl : public COleControl
 {
 	DECLARE_DYNCREATE(CCuOcxCtrl)
@@ -17,9 +18,11 @@ private:
 	CString m_strUserName;
 	CString m_strPassWord;
 	CString m_strServerIPAddr;
-	CString m_nServerPort;
+	long m_nServerPort;
 	CString m_strWorkDir;
 	CString m_strCameraID;
+
+	CMainPage *m_pMainPage;
 
 // Constructor
 public:
@@ -45,8 +48,7 @@ protected:
 
 // Message maps
 	//{{AFX_MSG(CCuOcxCtrl)
-		// NOTE - ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -58,6 +60,7 @@ protected:
 	afx_msg void SetServerPort(long nPort);
 	afx_msg void SetWorkDir(LPCTSTR strWorkDir);
 	afx_msg void SetCameraID(LPCTSTR strCameraID);
+	afx_msg void Init();
 	//}}AFX_DISPATCH
 	DECLARE_DISPATCH_MAP()
 
@@ -78,6 +81,7 @@ public:
 	dispidSetServerPort = 4L,
 	dispidSetWorkDir = 5L,
 	dispidSetCameraID = 6L,
+	dispidInit = 7L,
 	//}}AFX_DISP_ID
 	};
 };

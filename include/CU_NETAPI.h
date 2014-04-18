@@ -907,7 +907,7 @@ struct TV_WALL_STATE
     //解码器窗口切换锁定/取消锁定
     CU_NET_API HRESULT   TWWindowLock(DWORD pdwServerPara, BOOL bLock, char* szDisGUID, int nMonNo, int nWndNo);
     //群组、巡回运行状态查询 //1 巡回，2 群组
-    CU_NET_API HRESULT   QueryRunStatus(DWORD pdwServerPara, int iType, LPCTSTR lpszID, BOOL *bStatus, LPCTSTR lpTVID = "");
+    CU_NET_API HRESULT   QueryRunStatus(DWORD pdwServerPara, int iType, LPCTSTR lpszID, BOOL *bStatus, LPCTSTR lpTVID = LPCTSTR(""));
 	
 	//矩阵单步切换
 	CU_NET_API HRESULT   MatrixStepRun(DWORD pdwServerPara, LPCTSTR lpPuid, int iCameraNo, int iMonitorNo, LPCTSTR lpGuid);
