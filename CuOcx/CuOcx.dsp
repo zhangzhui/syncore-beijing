@@ -220,12 +220,36 @@ SOURCE=.\CuOcxPpg.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DlgPicView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgPlayList.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FileDownloadDlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MainPage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\NetVodDlg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PicScrollView.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeRecRuntime.cpp
 # End Source File
 # Begin Source File
 
@@ -253,7 +277,27 @@ SOURCE=.\CuOcxPpg.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DlgPicView.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgPlayList.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FileDownloadDlg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MainPage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\NetVodDlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PicScrollView.h
 # End Source File
 # Begin Source File
 
@@ -262,6 +306,10 @@ SOURCE=.\Resource.h
 # Begin Source File
 
 SOURCE=.\StdAfx.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeRecRuntime.h
 # End Source File
 # Begin Source File
 

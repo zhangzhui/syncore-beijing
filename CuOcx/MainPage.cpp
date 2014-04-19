@@ -90,6 +90,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_CLOSE_VIDEO, OnBtnCloseVideo)
 	ON_BN_CLICKED(IDC_BTN_OPENSOUND, OnBtnOpensound)
 	ON_BN_CLICKED(IDC_BTN_OPENVOICE, OnBtnOpenvoice)
+	ON_BN_CLICKED(IDC_BTN_REPLAY, OnBtnReplay)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -989,4 +990,68 @@ UINT AFX_CDECL CMainPage::ptzControlThread(LPVOID lParam)
 	
 	TRACE(_T("PTZ=============== msgtype: %s, cmd: %s, param: %s, speed: %d\n"), ptz_control.msgtype, ptz_control.cmd, ptz_control.param, ptz_control.speed);
 	return 0x00;
+}
+
+void CMainPage::OnBtnReplay() 
+{
+	// TODO: Add your control notification handler code here
+	if ( m_dlgPlayList.m_hWnd == NULL )
+    {
+		m_dlgPlayList.Create(CDlgPlayList::IDD,this);
+    }
+	
+	m_dlgPlayList.SetGuInfo(&m_GuInfo);
+	m_dlgPlayList.ShowWindow(SW_SHOW);
+}
+
+BOOL CMainPage::MakeDir(char* filePath)
+{  
+	if ( filePath == '\0')
+	{
+		return FALSE;
+	}
+	
+	int m = 0, n = 0;   
+	char   temp[255];  
+	
+	while(1)   
+	{   
+		//字符串结束---
+		if(filePath[n] == '\0')
+		{   
+			break;   
+		}  
+		
+		//逐个获取文件夹的名称---
+		temp[m] = filePath[n]; 
+		
+		//当得到一个完整的文件夹名---
+		if(temp[m]=='\\' && temp[m-1] != '.')
+		{
+			temp[m]   =   '\0'; 
+			
+			//先检查当前要创建的文件夹是否存在---
+			if ( _access(temp,00) != 0 )
+			{
+				//不存在则生成---
+				int result = _mkdir(temp);
+				if ( result != 0)
+				{
+					return FALSE;
+				}
+			}
+			
+			//继续生成子目录---
+			temp[m]   =   '\\';   
+			temp[++m]   =   '\0';   
+			n++;   
+		}   
+		else
+		{   
+			n++;   
+			m++;   
+		}   
+	}   
+	
+	return TRUE;
 }

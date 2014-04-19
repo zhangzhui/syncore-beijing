@@ -44,6 +44,11 @@
 
 #include "Syncronization.h"
 
+#define NTIMEOUT 5000
+#define WM_DOWNLOADMSG  (WM_USER+IDD_DIALOG_DOWNLOAD)
+
+
+
 #import "c:/windows/system32/msxml3.dll"
 using namespace MSXML2;
 
@@ -105,6 +110,46 @@ extern DEVICENODE_OCX g_DeviceNodeList;
 #define GU_TYPE_AV_SLAVE		0x06
 
 #define MAX_DEVICE_NODE_NUM	256
+
+struct _timerec_seg_t
+{
+	int		bFlag;      //是否启用
+	int		start_hour;
+	int		start_minute;
+	int		start_second;
+	int		end_hour;
+	int		end_minute;
+	int		end_second;
+};
+
+typedef struct _timerec_runtime_info_t
+{
+	BOOL bAotuStart;//是否随程序启动而启动；
+	BOOL bStart; //是否启动录像
+	
+	BOOL bReConn;
+	
+	char szGuid[32];    //guid
+	char szGuname[32];  //guname
+	CU_NET_LIB::GUINFO *guInfo;     //szGuid 与 设备列表遍历后得到的树的项的DEVICE_NODE
+	BOOL bFind;	        //szGuid 与 设备列表遍历后得到的 该guid是否存在的值
+	void *pthis;
+	HANDLE hExitEvent;
+	HANDLE hExitThread;
+	
+	int runState;//线程运行状态0正常，1挂起，2切盘
+	//int nSwitchTime;
+	
+	//CEvent m_hNotiy;
+	HANDLE  hNotify;
+	void *pVideoIns;
+	void *prf;
+	CRITICAL_SECTION g_cs;
+	HANDLE hRecFile;
+	SYSTEMTIME sysCreateTime;
+	
+	_timerec_seg_t     time_seg[7];
+}_timerec_runtime_info_t;
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

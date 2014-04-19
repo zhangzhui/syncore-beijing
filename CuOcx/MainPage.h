@@ -10,8 +10,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CMainPage dialog
 #include "VideoManage.h"
+#include "DlgPlayList.h"
 
-#define NTIMEOUT 5000
 #define WM_LOGIN (WM_USER + 1)
 #define WM_GETDEVICELIST (WM_USER + 2)
 #define WM_CLEARDEVICELIST (WM_USER + 3)
@@ -29,6 +29,7 @@ public:
 	void SetServerPort(long nPort);
 	void SetWorkDir(LPCTSTR strWorkDir);
 	void SetCameraID(LPCTSTR strCameraID);
+	BOOL MakeDir(char* filePath);
 
 // Dialog Data
 	//{{AFX_DATA(CMainPage)
@@ -71,10 +72,11 @@ protected:
 	afx_msg void OnBtnCloseVideo();
 	afx_msg void OnBtnOpensound();
 	afx_msg void OnBtnOpenvoice();
+	afx_msg void OnBtnReplay();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
-private:
+public:
 	CString m_strUserName;
 	CString m_strPassWord;
 	CString m_strServerIPAddr;
@@ -102,10 +104,14 @@ private:
 	CString m_strNotiy;
 	BOOL m_bSoundAllow;
 	BOOL m_bVoice;
-public:
+
 	unsigned long m_play_id;
 	DWORD m_nCountTest;
 	CU_NET_LIB::DEVICE_NODE m_DevInfo;
+
+	CString m_strVodIp;
+    int m_nVodPort;
+	CDlgPlayList m_dlgPlayList;
 };
 
 typedef struct _ptz_control_t
