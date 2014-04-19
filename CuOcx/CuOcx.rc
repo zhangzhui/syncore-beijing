@@ -172,6 +172,28 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,7,90,122,2
 END
 
+IDD_PROPPAGE_MAIN DIALOG DISCARDABLE  0, 0, 600, 450
+STYLE WS_CHILD
+FONT 9, "宋体"
+BEGIN
+    CONTROL         "",IDC_STATIC_PREVIEW,"Static",SS_GRAYRECT | WS_BORDER,7,
+                    7,400,436
+    LTEXT           "设备名称：",IDC_STATIC_DEVICE,411,15,38,8
+    EDITTEXT        IDC_EDIT_DEVICE,414,27,173,30,ES_MULTILINE | 
+                    ES_AUTOHSCROLL | WS_DISABLED | WS_VSCROLL
+    PUSHBUTTON      "打开视频",IDC_BTN_OPEN_VIDEO,414,70,50,14
+    PUSHBUTTON      "关闭视频",IDC_BTN_CLOSE_VIDEO,475,70,50,14
+    PUSHBUTTON      "向上",IDC_BTN_UP,481,130,37,14
+    PUSHBUTTON      "自动",IDC_BTN_AUTO,481,154,37,14
+    PUSHBUTTON      "向左",IDC_BTN_LEFT,425,154,37,14
+    PUSHBUTTON      "向右",IDC_BTN_RIGHT,537,154,37,14
+    PUSHBUTTON      "向下",IDC_BTN_DOWN,481,178,37,14
+    GROUPBOX        "操作",IDC_STATIC,416,114,165,92
+    PUSHBUTTON      "视频回放",IDC_BTN_REPLAY,536,70,50,14
+    PUSHBUTTON      "打开声音",IDC_BTN_OPENSOUND,414,92,50,14
+    PUSHBUTTON      "开启语音对讲",IDC_BTN_OPENVOICE,475,92,50,14
+END
+
 IDD_DIALOG_NET_PLAY DIALOG DISCARDABLE  0, 0, 332, 305
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "网络点播"
@@ -256,6 +278,14 @@ BEGIN
         BOTTOMMARGIN, 267
     END
 
+    IDD_PROPPAGE_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 593
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 443
+    END
+
     IDD_DIALOG_NET_PLAY, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -300,65 +330,6 @@ BEGIN
 END
 
 #endif    // Chinese (P.R.C.) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_PROPPAGE_MAIN DIALOG DISCARDABLE  0, 0, 600, 450
-STYLE WS_CHILD
-FONT 8, "MS Sans Serif"
-BEGIN
-    CONTROL         "",IDC_STATIC_PREVIEW,"Static",SS_GRAYRECT | WS_BORDER,7,
-                    7,400,436
-    LTEXT           "设备名称：",IDC_STATIC_DEVICE,411,15,38,8
-    EDITTEXT        IDC_EDIT_DEVICE,414,27,173,30,ES_MULTILINE | 
-                    ES_AUTOHSCROLL | WS_DISABLED | WS_VSCROLL
-    PUSHBUTTON      "打开视频",IDC_BTN_OPEN_VIDEO,414,70,50,14
-    PUSHBUTTON      "关闭视频",IDC_BTN_CLOSE_VIDEO,475,70,50,14
-    PUSHBUTTON      "向上",IDC_BTN_UP,481,130,37,14
-    PUSHBUTTON      "自动",IDC_BTN_AUTO,481,154,37,14
-    PUSHBUTTON      "向左",IDC_BTN_LEFT,425,154,37,14
-    PUSHBUTTON      "向右",IDC_BTN_RIGHT,537,154,37,14
-    PUSHBUTTON      "向下",IDC_BTN_DOWN,481,178,37,14
-    GROUPBOX        "操作",IDC_STATIC,416,114,165,92
-    PUSHBUTTON      "视频回放",IDC_BTN_REPLAY,536,70,50,14
-    PUSHBUTTON      "打开声音",IDC_BTN_OPENSOUND,414,92,50,14
-    PUSHBUTTON      "开启语音对讲",IDC_BTN_OPENVOICE,475,92,50,14
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
-BEGIN
-    IDD_PROPPAGE_MAIN, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 593
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 443
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

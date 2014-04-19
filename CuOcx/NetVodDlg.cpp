@@ -267,7 +267,7 @@ void CNetVodDlg::OnButtonFast()
 					sprintf(szSpeed, "慢放 1/%dX 倍速", -nSpeed);
 				}
 				
-				GetDlgItem(IDC_STATIC_SPEED)->SetWindowText((const unsigned short *)szSpeed);
+				GetDlgItem(IDC_STATIC_SPEED)->SetWindowText(/*(const unsigned short *)*/szSpeed);
 			}
 		}
 	}
@@ -307,7 +307,7 @@ void CNetVodDlg::OnButtonSlow()
 					sprintf(szSpeed, "慢放 1/%dX 倍速", -nSpeed);
 				}
 				
-				GetDlgItem(IDC_STATIC_SPEED)->SetWindowText((const unsigned short *)szSpeed);
+				GetDlgItem(IDC_STATIC_SPEED)->SetWindowText(/*(const unsigned short *)*/szSpeed);
 			}
 		}
 	}

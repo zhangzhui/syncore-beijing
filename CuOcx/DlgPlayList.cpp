@@ -182,7 +182,7 @@ void CDlgPlayList::OnButtonQuery()
 		{
 			CString strPath = _T("");
 			char strTemp[MAX_PATH];
-			GetCurrentDirectory(MAX_PATH,(unsigned short *)strTemp);
+			GetCurrentDirectory(MAX_PATH,/*(unsigned short *)*/strTemp);
 			strPath.Format(_T("%s\\%s\\Record\\%04d%02d%02d"),  strTemp,m_szGuName,
 				m_tDate.GetYear(),m_tDate.GetMonth (),m_tDate.GetDay());  // 录象文件位置
 			
@@ -237,7 +237,7 @@ void CDlgPlayList::OnButtonQuery()
 					int nCount = m_ctrlListRecord.GetItemCount();
 					sprintf(szIndex, (const char *)_T("%05d"), nCount);
 					
-					m_ctrlListRecord.InsertItem(nCount, (unsigned short *)szIndex, 0);
+					m_ctrlListRecord.InsertItem(nCount, /*(unsigned short *)*/szIndex, 0);
 					m_ctrlListRecord.SetItemState(nCount, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 
 					m_ctrlListRecord.SetColumnWidth(1, 0);
@@ -394,7 +394,7 @@ void CDlgPlayList::OnButtonQuery()
 					int nCount = m_ctrlListRecord.GetItemCount();
 					sprintf(szIndex, (const char *)_T("%05d"), nCount);
 					
-					m_ctrlListRecord.InsertItem(nCount, (unsigned short *)szIndex, 0);
+					m_ctrlListRecord.InsertItem(nCount, /*(unsigned short *)*/szIndex, 0);
 					m_ctrlListRecord.SetItemState(nCount, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 
 					m_ctrlListRecord.SetColumnWidth(1, 0);
@@ -520,7 +520,7 @@ void CDlgPlayList::SearchFileToList(LPCTSTR lpszID, LPCTSTR lpszPath,COleDateTim
 				int iEnd = time1.GetHour()*3600 + time1.GetMinute()*60 + time1.GetSecond() - EndDate.GetHour()*3600 - EndDate.GetMinute()*60 - EndDate.GetSecond();
 				if (iStart>=0 && iEnd<=0)
 				{
-					m_ctrlListRecord.InsertItem(nCount, (unsigned short *)szIndex, 0);
+					m_ctrlListRecord.InsertItem(nCount, /*(unsigned short *)*/szIndex, 0);
 					m_ctrlListRecord.SetItemState(nCount, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 					
 					CString strModify;
@@ -574,15 +574,15 @@ void CDlgPlayList::SearchFileToList(LPCTSTR lpszID, LPCTSTR lpszPath,COleDateTim
 
 			char szIndex[32];
 			sprintf(szIndex, "%05d", i);
-			m_ctrlListRecord.InsertItem(i, (const unsigned short *)szIndex, 0);
+			m_ctrlListRecord.InsertItem(i, /*(const unsigned short *)*/szIndex, 0);
 			m_ctrlListRecord.SetItemState(i, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 			
 			CString strModify;
-			ResetFileName(0, (const unsigned short *)FileInfo[i-nHaveFileCount].filepath, strModify);
-			m_ctrlListRecord.SetItemText(i, 8, (const unsigned short *)FileInfo[i-nHaveFileCount].filepath);		  // 文件全路径
+			ResetFileName(0, /*(const unsigned short *)*/FileInfo[i-nHaveFileCount].filepath, strModify);
+			m_ctrlListRecord.SetItemText(i, 8, /*(const unsigned short *)*/FileInfo[i-nHaveFileCount].filepath);		  // 文件全路径
 			m_ctrlListRecord.SetItemText(i, 1, lpszID);
-			m_ctrlListRecord.SetItemText(i, 2, (const unsigned short *)FileInfo[i-nHaveFileCount].szCreateTime);  // 开始时间
-			m_ctrlListRecord.SetItemText(i, 3, (const unsigned short *)FileInfo[i-nHaveFileCount].szLastWriteTime);    // 停止时间
+			m_ctrlListRecord.SetItemText(i, 2, /*(const unsigned short *)*/FileInfo[i-nHaveFileCount].szCreateTime);  // 开始时间
+			m_ctrlListRecord.SetItemText(i, 3, /*(const unsigned short *)*/FileInfo[i-nHaveFileCount].szLastWriteTime);    // 停止时间
 			m_ctrlListRecord.SetItemText(i, 4, strModify);     // 文件名
  			m_ctrlListRecord.SetItemText(i, 5, strSize);       // 文件大小
 			m_ctrlListRecord.SetItemText(i, 6, _T("本地"));        // 查询位置
@@ -766,7 +766,7 @@ void CDlgPlayList::OnButtonQueryPic()
 					int nCount = m_ctrlListRecord.GetItemCount();
 					sprintf(szIndex, "%05d", nCount);
 					
-					m_ctrlListRecord.InsertItem(nCount, (const unsigned short *)szIndex, 0);
+					m_ctrlListRecord.InsertItem(nCount, /*(const unsigned short *)*/szIndex, 0);
 					m_ctrlListRecord.SetItemState(nCount, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 
 					m_ctrlListRecord.SetColumnWidth(1, 0);
@@ -919,7 +919,7 @@ void CDlgPlayList::OnButtonQueryPic()
 					int nCount = m_ctrlListRecord.GetItemCount();
 					sprintf(szIndex, "%05d", nCount);
 					
-					m_ctrlListRecord.InsertItem(nCount, (const unsigned short *)szIndex, 0);
+					m_ctrlListRecord.InsertItem(nCount, /*(const unsigned short *)*/szIndex, 0);
 					m_ctrlListRecord.SetItemState(nCount, INDEXTOSTATEIMAGEMASK(1),  LVIS_STATEIMAGEMASK);
 					
 					m_ctrlListRecord.SetColumnWidth(1, 0);
@@ -1068,7 +1068,7 @@ void CDlgPlayList::OnSelchangeComboRecordSrc()
 	else
 	{
 		// 获取查询对象标识	
-		HRESULT hr = CU_NET_LIB::VodServerQuery(g_dwServerId, (const unsigned short *)m_pGuInfo->DomainID, (const unsigned short *)m_pGuInfo->GUID, &m_iVodServerNum, m_vodServerInfo);
+		HRESULT hr = CU_NET_LIB::VodServerQuery(g_dwServerId, /*(const unsigned short *)*/m_pGuInfo->DomainID, /*(const unsigned short *)*/m_pGuInfo->GUID, &m_iVodServerNum, m_vodServerInfo);
 		if(hr != ST_OK)
 		{
 			return;
@@ -1083,7 +1083,7 @@ void CDlgPlayList::OnSelchangeComboRecordSrc()
 			while( CB_ERR != m_ctrlRecordServer.DeleteString( 0 ) );
 			for (int i = 0; i < m_iVodServerNum; i++)
 			{
-				m_ctrlRecordServer.InsertString(i, (const unsigned short *)m_vodServerInfo[i].szVodName);
+				m_ctrlRecordServer.InsertString(i, /*(const unsigned short *)*/m_vodServerInfo[i].szVodName);
 			}
 			m_ctrlRecordServer.SetCurSel(0);
 			m_strVodIp.Format(_T("%s"), m_vodServerInfo[0].szVodIp);
@@ -1273,7 +1273,7 @@ void CDlgPlayList::OnMenuPlay()
 		
 		CString strPlayExe;
 		char strPath[MAX_PATH];
-		GetCurrentDirectory(MAX_PATH, (unsigned short *)strPath);
+		GetCurrentDirectory(MAX_PATH, /*(unsigned short *)*/strPath);
 		char exePath[MAX_PATH];
 
 		sprintf(exePath,"%s\\%s",strPath,"topFilePlay.exe");

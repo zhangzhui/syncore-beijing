@@ -985,7 +985,7 @@ UINT AFX_CDECL CMainPage::ptzControlThread(LPVOID lParam)
 	ptz_control_t ptz_control =  *((ptz_control_t*)lParam);
 	delete  (ptz_control_t*)lParam;
 	
-	CU_NET_LIB::DomeControl(g_dwServerId, ptz_control.guInfo, (const unsigned short *)ptz_control.csgIp,  ptz_control.csgport,
+	CU_NET_LIB::DomeControl(g_dwServerId, ptz_control.guInfo, /*(const unsigned short *)*/ptz_control.csgIp,  ptz_control.csgport,
 		ptz_control.msgtype, ptz_control.speed, ptz_control.cmd, ptz_control.param);
 	
 	TRACE(_T("PTZ=============== msgtype: %s, cmd: %s, param: %s, speed: %d\n"), ptz_control.msgtype, ptz_control.cmd, ptz_control.param, ptz_control.speed);

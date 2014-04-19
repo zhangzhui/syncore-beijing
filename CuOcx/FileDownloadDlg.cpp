@@ -224,7 +224,7 @@ LRESULT CFileDownloadDlg::ProcessNotify(WPARAM wParam, LPARAM lParam)
 		m_ctrlDownloadProgress.SetPos(nPos);
 		char szText[32] = {0};
 		sprintf(szText, "%3d%%", nPos*100/10000);
-		GetDlgItem(IDC_STATIC_INFO)->SetWindowText((const unsigned short *)szText);
+		GetDlgItem(IDC_STATIC_INFO)->SetWindowText(/*(const unsigned short *)*/szText);
 	}
 
 	if( nPos > 10000) // finished

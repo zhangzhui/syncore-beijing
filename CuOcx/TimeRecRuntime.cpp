@@ -45,7 +45,7 @@ BOOL CTimeRecRuntime::LoadRuntimeInfo()
 	
 	CString strFileName;
 	strFileName.Format(_T("\\TimeRec_Cfg.ini"));
-	GetModuleFileName(NULL, (unsigned short *)szFileName, MAX_PATH);
+	GetModuleFileName(NULL, /*(unsigned short *)*/szFileName, MAX_PATH);
 	*strrchr(szFileName,_T('\\')) = '\0';
 	strcat(szFileName, (const char *)strFileName.GetBuffer(strFileName.GetLength()));
 
@@ -56,7 +56,7 @@ BOOL CTimeRecRuntime::LoadRuntimeInfo()
 	}   
 	
 	memset(buf,0,sizeof(buf));
-	GetPrivateProfileString(_T("DISKCONFIG"), _T("RESSIZE"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+	GetPrivateProfileString(_T("DISKCONFIG"), _T("RESSIZE"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 	{
 		CString strSec, strKey, strValue, strDiskLst;
@@ -64,58 +64,58 @@ BOOL CTimeRecRuntime::LoadRuntimeInfo()
 		strSec = "DISKCONFIG";
 		strKey = "RESSIZE";
 		strValue.Format(_T("%d"), 256);
-		::WritePrivateProfileString(strSec, strKey, strValue, (unsigned short *)szFileName);
+		::WritePrivateProfileString(strSec, strKey, strValue, /*(unsigned short *)*/szFileName);
 		
 		strKey = "SWITCHTIME";
 		strValue.Format(_T("%d"), 5);
-		::WritePrivateProfileString(strSec, strKey, strValue, (unsigned short *)szFileName);
+		::WritePrivateProfileString(strSec, strKey, strValue, /*(unsigned short *)*/szFileName);
 		
 		strKey = "COVERFLAG";
 		strValue.Format(_T("%d"), 1);
-		::WritePrivateProfileString(strSec, strKey, strValue, (unsigned short *)szFileName);
+		::WritePrivateProfileString(strSec, strKey, strValue, /*(unsigned short *)*/szFileName);
 
 		strKey = "AUTOFLAG";
 		strValue.Format(_T("%d"), 0);
-		::WritePrivateProfileString(strSec, strKey, strValue, (unsigned short *)szFileName);
+		::WritePrivateProfileString(strSec, strKey, strValue, /*(unsigned short *)*/szFileName);
 		
 		char szSystemDir[256];
-		GetSystemDirectory((unsigned short *)szSystemDir, 256);
+		GetSystemDirectory(/*(unsigned short *)*/szSystemDir, 256);
 		strDiskLst.Format(_T("%C:"),szSystemDir[0]);
 		
 		//strDiskLst = "C:";
 		strKey = "NAME";
-		::WritePrivateProfileString(strSec, strKey, strDiskLst, (unsigned short *)szFileName);
+		::WritePrivateProfileString(strSec, strKey, strDiskLst, /*(unsigned short *)*/szFileName);
 	}
 	
 	
 	
 	memset(buf,0,sizeof(buf));
-	GetPrivateProfileString(_T("DISKCONFIG"), _T("RESSIZE"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+	GetPrivateProfileString(_T("DISKCONFIG"), _T("RESSIZE"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 		return FALSE;
 	m_iResSize = atoi(buf);
 	
 	memset(buf,0,sizeof(buf));
-	GetPrivateProfileString(_T("DISKCONFIG"), _T("COVERFLAG"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+	GetPrivateProfileString(_T("DISKCONFIG"), _T("COVERFLAG"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 		return FALSE;
 	m_bCoverFlag = atoi(buf);
 
 	memset(buf,0,sizeof(buf));
-	GetPrivateProfileString(_T("DISKCONFIG"), _T("AUTOFLAG"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+	GetPrivateProfileString(_T("DISKCONFIG"), _T("AUTOFLAG"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 		return FALSE;
 	m_bAutoFlag = atoi(buf);
 	
 	memset(buf,0,sizeof(buf));
-    GetPrivateProfileString(_T("DISKCONFIG"), _T("SWITCHTIME"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+    GetPrivateProfileString(_T("DISKCONFIG"), _T("SWITCHTIME"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 		return FALSE;
 	m_iSwitchTime = atoi(buf);
 	
 	
 	memset(buf,0,sizeof(buf));
-	GetPrivateProfileString(_T("DISKCONFIG"), _T("NAME"), _T(""), (unsigned short *)buf, sizeof(buf), (unsigned short *)szFileName);
+	GetPrivateProfileString(_T("DISKCONFIG"), _T("NAME"), _T(""), /*(unsigned short *)*/buf, sizeof(buf), /*(unsigned short *)*/szFileName);
 	if(strlen(buf)==0)
 		return FALSE;
 	
@@ -701,7 +701,7 @@ void timerecThread(void * param)
 		if (m_pVideoIns == NULL)
 		{
 			TRACE(_T(".......CreateVideoInstance\n"));
-			m_pVideoIns = g_VideoMng.CreateVideoInstance((unsigned short *)pInfo->guInfo->GUID);
+			m_pVideoIns = g_VideoMng.CreateVideoInstance(/*(unsigned short *)*/pInfo->guInfo->GUID);
 			if(m_pVideoIns)
 			{
 				if (pInfo->hRecFile == NULL)
@@ -1041,7 +1041,7 @@ BOOL  CTimeRecRuntime::FindDelDir()
 		sprintf(tempFileFind,"%s\\*.*",strPath);
 		
 		CFileFind   tempFind;   
-		BOOL   IsFinded=(BOOL)tempFind.FindFile((unsigned short *)tempFileFind);
+		BOOL   IsFinded=(BOOL)tempFind.FindFile(/*(unsigned short *)*/tempFileFind);
 		
 		while(IsFinded) //查找所有文件，不查找该文件夹下的其他文件夹内的文件  
 		{   
@@ -1054,7 +1054,7 @@ BOOL  CTimeRecRuntime::FindDelDir()
 				{   
 					sprintf(DelFiles[i].FileName,"%s\\%s",strPath,foundFileName);
 					
-					HANDLE hDir = CreateFile ((unsigned short *)DelFiles[i].FileName, GENERIC_READ,
+					HANDLE hDir = CreateFile (/*(unsigned short *)*/DelFiles[i].FileName, GENERIC_READ,
 						FILE_SHARE_READ|FILE_SHARE_DELETE,
 						NULL, OPEN_EXISTING,
 						FILE_FLAG_BACKUP_SEMANTICS, NULL);
@@ -1119,7 +1119,7 @@ bool CTimeRecRuntime::DeleteDirectory(char* sDirName)
 	char sTempFileFind[512] ; 
 	
 	sprintf(sTempFileFind,"%s\\*.*",sDirName);  
-	BOOL IsFinded = tempFind.FindFile((const unsigned short *)sTempFileFind);  
+	BOOL IsFinded = tempFind.FindFile(/*(const unsigned short *)*/sTempFileFind);  
 	while (IsFinded)  
 	{  
 		IsFinded = tempFind.FindNextFile();  
@@ -1139,22 +1139,22 @@ bool CTimeRecRuntime::DeleteDirectory(char* sDirName)
 			{  
 				char sTempFileName[512];  
 				sprintf((char *)sTempFileName, (const char *)_T("%s\\%s"),sDirName,sFoundFileName);  
-				if (!DeleteFile((const unsigned short *)sTempFileName))//打印错误信息
+				if (!DeleteFile(/*(const unsigned short *)*/sTempFileName))//打印错误信息
 				{
 					memset(buf,0,sizeof(buf));
 					sprintf(buf, (const char *)_T("DeleteFile\t%s************ERROR\n"), sTempFileName);
-					TRACE((const unsigned short *)buf);
+					TRACE(/*(const unsigned short *)*/buf);
 					//WriteLogFile(buf,strlen(buf));
 				}
 			}  
 		}  
 	}  
 	tempFind.Close();  
-	if(!RemoveDirectory((const unsigned short *)sDirName))//打印错误信息
+	if(!RemoveDirectory(/*(const unsigned short *)*/sDirName))//打印错误信息
 	{  
 		memset(buf,0,sizeof(buf));
 		sprintf(buf,(const char *)_T("RemoveDirectory\t%s##############ERROR\n"),sDirName);
-		TRACE((const unsigned short *)buf);
+		TRACE(/*(const unsigned short *)*/buf);
 		//WriteLogFile(buf,strlen(buf));
 		return FALSE;  
 	}
@@ -1178,7 +1178,7 @@ void CTimeRecRuntime::FindFile(char *guName,
 	{  
 		char driveName[256];
 		sprintf(driveName, "%c:", 'A' + k);
-		if ((LogicalDrive&(1<<k)) != 0 && (GetDriveType((const unsigned short *)driveName) == DRIVE_FIXED))
+		if ((LogicalDrive&(1<<k)) != 0 && (GetDriveType(/*(const unsigned short *)*/driveName) == DRIVE_FIXED))
 		{
 			CString strPath;
 			strPath.Format(_T("%s\\TIME_RECORD\\%04d%02d%02d\\%s\\"),
@@ -1189,7 +1189,7 @@ void CTimeRecRuntime::FindFile(char *guName,
 			sprintf(tempFileFind,"%s\\*.*",strPath);
 			
 			CFileFind   tempFind;   
-			BOOL   IsFinded=(BOOL)tempFind.FindFile((const unsigned short *)tempFileFind);
+			BOOL   IsFinded=(BOOL)tempFind.FindFile(/*(const unsigned short *)*/tempFileFind);
 			
 			while(IsFinded) //查找所有文件，不查找该文件夹下的其他文件夹内的文件  
 			{   
@@ -1202,7 +1202,7 @@ void CTimeRecRuntime::FindFile(char *guName,
 					{   
 						sprintf(findFile[i].FileName,"%s\\%s",strPath,foundFileName);
 						
-						HANDLE hDir = CreateFile((const unsigned short *)findFile[i].FileName, GENERIC_READ,
+						HANDLE hDir = CreateFile(/*(const unsigned short *)*/findFile[i].FileName, GENERIC_READ,
 							FILE_SHARE_READ,
 							NULL, OPEN_EXISTING,
 							FILE_FLAG_BACKUP_SEMANTICS, NULL);
