@@ -28,7 +28,7 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 	{
 		frame_head_t *pHead = (frame_head_t *)lpBuf;
 		player_inputNetFrame(pDlg->m_play_id, (char *)lpBuf, lSize);
-		TRACE(_T("~~~~~~~~~~~~~~~~~~~lSize = %d------lDecoderID=%d\n"), lSize, lDecoderID);
+// 		TRACE(_T("~~~~~~~~~~~~~~~~~~~lSize = %d------lDecoderID=%d\n"), lSize, lDecoderID);
 		pDlg->m_nCountTest = pHead->frame_no;
 	}
 	//记录到文件
@@ -50,7 +50,7 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 
 void RecAudioDataFunc(long lHandle, void* lpBuf, long lSize, long lDecoderID)
 {
-	player_inputNetFrame(m_gdwAudioInstance, (char*)lpBuf, lSize);	
+	player_inputNetFrame(g_dwAudioInstance, (char*)lpBuf, lSize);	
 	return;
 }
 
@@ -70,6 +70,18 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CMainPage)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_pVideoIns = NULL;
+
+	m_bStreamOpenFlag = FALSE;
+	m_play_id = 0;
+	m_lManufactType = 0;
+	m_pDeviceNode = NULL;
+	m_bLoginFlag = TRUE;
+	ZeroMemory(&m_GuInfo,sizeof(CU_NET_LIB::GUINFO));
+	m_bOpenVideo = FALSE;
+	ZeroMemory(&m_DevInfo,sizeof(CU_NET_LIB::DEVICE_NODE));
+	m_bVoice = FALSE;
+	m_bSoundAllow = FALSE;
 }
 
 
@@ -86,11 +98,14 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	//{{AFX_MSG_MAP(CMainPage)
 	ON_MESSAGE(WM_LOGIN, OnLogin)
 	ON_MESSAGE(WM_GETDEVICELIST, OnGetDeviceList)
+	ON_MESSAGE(WM_CLEARDEVICELIST, OnClearDeviceList)
 	ON_BN_CLICKED(IDC_BTN_OPEN_VIDEO, OnBtnOpenVideo)
 	ON_BN_CLICKED(IDC_BTN_CLOSE_VIDEO, OnBtnCloseVideo)
 	ON_BN_CLICKED(IDC_BTN_OPENSOUND, OnBtnOpensound)
 	ON_BN_CLICKED(IDC_BTN_OPENVOICE, OnBtnOpenvoice)
 	ON_BN_CLICKED(IDC_BTN_REPLAY, OnBtnReplay)
+	ON_WM_DESTROY()
+	ON_WM_CLOSE()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -104,7 +119,7 @@ BOOL CMainPage::OnInitDialog()
 	// TODO: Add extra initialization here
 	if (InitSDK())
 	{
-		m_gdwAudioInstance = player_createPlayInstance(TP_PLAY_SDK,
+		g_dwAudioInstance = player_createPlayInstance(TP_PLAY_SDK,
 												PLAY_DUALTALK_TYPE,
 												0);
 
@@ -145,10 +160,15 @@ void CMainPage::SetCameraID(LPCTSTR strCameraID)
 	m_strCameraID = strCameraID;
 }
 
-void CMainPage::PostNcDestroy() 
+void CMainPage::PostNcDestroy()
 {
 	// TODO: Add your specialized code here and/or call the base class
-	
+	Sleep(300);
+	if(m_bClientStartUp == TRUE)
+	{
+		CU_NET_LIB::ClientCleanUp(g_dwServerId);
+	}
+
 	if (g_dwServerId != NULL)
 	{
 		CU_NET_LIB::DeleteLibInstance(g_dwServerId);
@@ -232,6 +252,7 @@ void CMainPage::OnLogin(WPARAM wParam, LPARAM lParam)
 		return;
 	}
 	m_bLoginFlag = TRUE;//用户登录成功
+	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPEN_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPEN_VIDEO)->GetSafeHwnd());
 }
 
 void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
@@ -362,11 +383,13 @@ void CMainPage::OnBtnOpenVideo()
 					break;
 				}
 			}
+			iter++;
 		}
 	}
 
 	StartStream(*m_pDeviceNode);
 	m_bOpenVideo = TRUE;
+	GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(FALSE);
 }
 
 void CMainPage::StartStream(CU_NET_LIB::DEVICE_NODE devInfo)
@@ -377,7 +400,7 @@ void CMainPage::StartStream(CU_NET_LIB::DEVICE_NODE devInfo)
 	m_hNotiy.ResetEvent();
 	
 	CU_NET_LIB::GUINFO guInfo = devInfo.guInfo;	
-	m_pVideoIns = m_VideoMng.CreateVideoInstance((LPCTSTR)guInfo.GUID);
+	m_pVideoIns = g_VideoMng.CreateVideoInstance((LPCTSTR)guInfo.GUID);
 	if(!CreatePlayInstance(guInfo))
 	{
 		MessageBox(_T("创建视频实例失败！"));
@@ -393,6 +416,7 @@ void CMainPage::StartStream(CU_NET_LIB::DEVICE_NODE devInfo)
 		m_pThread = AfxBeginThread(Thread_Status, (LPVOID)this, THREAD_PRIORITY_NORMAL, 0, CREATE_SUSPENDED, NULL);
 		if(m_pThread != NULL)
 		{
+			m_pThread->m_bAutoDelete = FALSE;
 			m_pThread->ResumeThread();
 		}
 		else
@@ -421,14 +445,41 @@ void CMainPage::StopStream()
 	}	
 	if (m_pVideoIns)                            
 	{
-		//m_pVideoIns->Stop((LONG)this);
-	}	
-    m_pVideoIns->Stop((LONG)this);
-	m_pVideoIns = NULL;	
+		m_pVideoIns->Stop((LONG)this);
+		m_pVideoIns = NULL;
+	}
+	WaitForThreadStatus();
 	m_bStreamOpenFlag = FALSE;
 //	CU_NET_LIB::RealVideoPreviewStop(g_dwServerId, m_hVideo)
 	Invalidate();
 	m_GuInfo.bState = FALSE;
+}
+
+void  CMainPage::WaitForThreadStatus()
+{
+	::SetEvent(m_hEventQuit);
+	DWORD dwStart = GetTickCount();
+	if(m_pThread)
+	{
+		HANDLE  hThread = m_pThread->m_hThread;
+		DWORD dwCode = STILL_ACTIVE;
+		while(1)
+		{
+			GetExitCodeThread(hThread, &dwCode);
+            if(STILL_ACTIVE == dwCode)
+			{
+				Sleep(100);
+			}
+			else
+			{
+				break;
+			}
+		}
+		SAFE_DELETE(m_pThread);
+	}
+
+	CloseHandle(m_hEventQuit);
+	TRACE(_T("WaitForThreadStatus lost time: %d\n"), GetTickCount()-dwStart);
 }
 
 BOOL CMainPage::CreatePlayInstance(CU_NET_LIB::GUINFO guInfo)
@@ -561,7 +612,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 		}
 		pDlg->m_strNotiy.Format(_T("%s"), szText);
 		if(WAIT_OBJECT_0 == ::WaitForSingleObject(pDlg->m_hEventQuit, nWaitTime))
-			break ;
+			break;
 	}
 	return TRUE;
 }
@@ -569,10 +620,18 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 void CMainPage::OnBtnCloseVideo() 
 {
 	// TODO: Add your control notification handler code here
+	if (m_bSoundAllow)
+	{
+		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPENSOUND, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPENSOUND)->GetSafeHwnd());
+	}
+
 	StopStream();
 	DestroyPlayInstance();
 
 	m_bOpenVideo = FALSE;
+	GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BTN_CLOSE_VIDEO)->EnableWindow(FALSE);
+
 }
 
 void CMainPage::OnBtnOpensound() 
@@ -654,15 +713,15 @@ BOOL CMainPage::StartVoice()
 		mAudioTalk.iAmr_mode = 7;
 		mAudioTalk.iAmr_format = 0;		
 		
-		if(player_startDualTalk(m_gdwAudioInstance, &mAudioTalk) != 0)
+		if(player_startDualTalk(g_dwAudioInstance, &mAudioTalk) != 0)
 		{
-			m_gdwAudioInstance = 0;
+			g_dwAudioInstance = 0;
 			CU_NET_LIB::StopChart(g_dwServerId);
 			MessageBox(_T("语音呼叫失败, 音频设备初始化失败！"),  _T("提示"), MB_ICONSTOP|MB_OK);
 			
 			return FALSE;
 		}
-		player_registerSetDualCallback(m_gdwAudioInstance, DualDataFunc, (DWORD)this);		
+		player_registerSetDualCallback(g_dwAudioInstance, DualDataFunc, (DWORD)this);		
 	}
 	
 	return TRUE;
@@ -681,7 +740,7 @@ void CMainPage::StopChart()
 	
 	if ( m_bVoice == TRUE )
 	{
-		player_stopDualTalk(m_gdwAudioInstance);
+		player_stopDualTalk(g_dwAudioInstance);
 		CU_NET_LIB::StopChart(g_dwServerId);
 		Sleep(100);
 	}
@@ -995,11 +1054,12 @@ UINT AFX_CDECL CMainPage::ptzControlThread(LPVOID lParam)
 void CMainPage::OnBtnReplay() 
 {
 	// TODO: Add your control notification handler code here
-	if ( m_dlgPlayList.m_hWnd == NULL )
+	if (m_dlgPlayList.GetSafeHwnd() == NULL)
     {
-		m_dlgPlayList.Create(CDlgPlayList::IDD,this);
+		m_dlgPlayList.Create(CDlgPlayList::IDD, this);
     }
 	
+	m_dlgPlayList.SetMainPage(this);
 	m_dlgPlayList.SetGuInfo(&m_GuInfo);
 	m_dlgPlayList.ShowWindow(SW_SHOW);
 }
@@ -1054,4 +1114,25 @@ BOOL CMainPage::MakeDir(char* filePath)
 	}   
 	
 	return TRUE;
+}
+
+void CMainPage::OnDestroy() 
+{
+	CDialog::OnDestroy();
+	Sleep(300);
+	// TODO: Add your message handler code here
+	GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd();
+	if (m_bOpenVideo == TRUE)
+	{
+		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_CLOSE_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd()); 
+	}
+
+	SendMessage(WM_CLEARDEVICELIST, NULL, NULL);//清除动态申请的内存
+}
+
+void CMainPage::OnClose() 
+{
+	// TODO: Add your message handler code here and/or call default
+	m_dlgPlayList.DestroyWindow();
+	CDialog::OnClose();
 }

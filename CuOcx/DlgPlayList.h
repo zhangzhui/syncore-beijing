@@ -6,10 +6,10 @@
 #endif // _MSC_VER > 1000
 // DlgPlayList.h : header file
 //
-
+#include "StdAfx.h"
 /////////////////////////////////////////////////////////////////////////////
 // CDlgPlayList dialog
-
+class CMainPage;
 class CDlgPlayList : public CDialog
 {
 // Construction
@@ -55,6 +55,8 @@ public:
 	int GetSearchType();
 	int GetSearchTypePic();
 
+	void SetMainPage(CMainPage *pMainPage);
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDlgPlayList)
@@ -86,6 +88,8 @@ private:
 	int	m_nType;
 	CU_NET_LIB::GUINFO m_guInfo;
 	CU_NET_LIB::VODSERVER_INFO m_vod_info;
+
+	CMainPage *m_pMainPage;
 };
 
 

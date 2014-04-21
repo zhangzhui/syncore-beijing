@@ -43,6 +43,7 @@
 #include <AFXPRIV2.H>
 
 #include "Syncronization.h"
+#include "VideoManage.h"
 
 #define NTIMEOUT 5000
 #define WM_DOWNLOADMSG  (WM_USER+IDD_DIALOG_DOWNLOAD)
@@ -68,9 +69,9 @@ using namespace MSXML2;
 #pragma comment(lib, "../lib/PlaySDK.lib")
 
 extern DWORD g_dwServerId;
-extern DWORD m_gdwAudioInstance;
+extern DWORD g_dwAudioInstance;
 extern char g_szDomainID[32];
-
+extern CVideoManage g_VideoMng;
 
 typedef std::list<CU_NET_LIB::GUINFO*> GUINFO_OCX;
 extern SyncObejct<GUINFO_OCX, CCriticalSection> g_GuInfoList;
@@ -151,6 +152,27 @@ typedef struct _timerec_runtime_info_t
 	_timerec_seg_t     time_seg[7];
 }_timerec_runtime_info_t;
 
+typedef struct _TimeRec_FileInfo_t
+{
+	char filepath[MAX_PATH];
+	char szCreateTime[32];
+	char szLastWriteTime[32];
+	DWORD dwFileSize;
+}TimeRec_FileInfo_t;
+
+typedef struct TimeRec_Day_t
+{
+	int year;
+	int month;
+	int day;
+}TimeRec_Day_t;
+
+typedef struct TimeRec_Time_t
+{
+	int hour;
+	int minute;
+	int second;
+}TimeRec_Time_t;
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

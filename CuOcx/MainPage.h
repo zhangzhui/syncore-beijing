@@ -59,6 +59,7 @@ protected:
 	BOOL StartVoice();
 	void StopChart();
 	BOOL GetYTControlCmd(int iMessage, char *szCmd, char *szParam);
+	void  WaitForThreadStatus();
 
 	static UINT Thread_Status(LPVOID lParam);
 	static UINT AFX_CDECL ptzControlThread(LPVOID lParam);
@@ -73,6 +74,8 @@ protected:
 	afx_msg void OnBtnOpensound();
 	afx_msg void OnBtnOpenvoice();
 	afx_msg void OnBtnReplay();
+	afx_msg void OnDestroy();
+	afx_msg void OnClose();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -84,7 +87,7 @@ public:
 	CString m_strWorkDir;
 	CString m_strCameraID;
 
-	BOOL m_bClientStartUp;
+	BOOL m_bClientStartUp;//启动客户端
 	BOOL m_bLoginFlag;
 
 	CU_NET_LIB::GUINFO m_GuInfo;
@@ -92,13 +95,12 @@ public:
 	BOOL m_bOpenVideo;
 	CEvent m_hNotiy;
 
-	CVideoManage m_VideoMng;
 	CVideoInstance *m_pVideoIns;
 
 	long m_lManufactType;
 	BOOL m_bStreamOpenFlag;
 
-	HANDLE m_hEventQuit;
+	HANDLE m_hEventQuit;//Thread_Status线程的等待退出事件
 	CWinThread *m_pThread;
 
 	CString m_strNotiy;

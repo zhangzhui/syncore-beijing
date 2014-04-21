@@ -249,10 +249,6 @@ SOURCE=.\StdAfx.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\TimeRecRuntime.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\VideoInstance.cpp
 # End Source File
 # Begin Source File
@@ -306,10 +302,6 @@ SOURCE=.\Resource.h
 # Begin Source File
 
 SOURCE=.\StdAfx.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\TimeRecRuntime.h
 # End Source File
 # Begin Source File
 

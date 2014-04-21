@@ -5,7 +5,6 @@
 #include "cuocx.h"
 #include "DlgPlayList.h"
 #include "MainPage.h"
-#include "TimeRecRuntime.h"
 #include "NetVodDlg.h"
 #include "DlgPicView.h"
 #include "FileDownloadDlg.h"
@@ -34,6 +33,8 @@ CDlgPlayList::CDlgPlayList(CWnd* pParent /*=NULL*/)
 	m_szPuid = "";
 	m_szGuName = "";
 	m_szGuid = "";
+
+	m_pMainPage = NULL;
 }
 
 
@@ -104,8 +105,6 @@ BOOL CDlgPlayList::OnInitDialog()
 	
 	// TODO: Add extra initialization here
 	InitCmbCtrls();
-	
-	UpdateData();
 	
 	if ( m_pGuInfo != NULL )
 	{
@@ -330,8 +329,8 @@ void CDlgPlayList::OnButtonQuery()
 			char szServerIp[256]={0};
 
 			  //µØÖ·
-			CMainPage* pMainDlg = (CMainPage*)GetParent();
-			sprintf(szServerIp, (LPSTR)(LPCSTR)pMainDlg->m_strServerIPAddr.GetBuffer(pMainDlg->m_strServerIPAddr.GetLength()));
+			CMainPage* pMainDlg = m_pMainPage;
+			sprintf(szServerIp, (const char *)pMainDlg->m_strServerIPAddr);
 
 			ParseDomain(szServerIp);
 
@@ -860,7 +859,7 @@ void CDlgPlayList::OnButtonQueryPic()
 			memset(&srvAddrinfo, 0, sizeof(CSrvAddrInfo));
 			char szServerIp[256]={0};
 
-			CMainPage* pDlg = (CMainPage* )GetParent();
+			CMainPage* pDlg = m_pMainPage;
 			sprintf(szServerIp, (LPSTR)(LPCSTR)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
 
 			ParseDomain(szServerIp);
@@ -1089,7 +1088,7 @@ void CDlgPlayList::OnSelchangeComboRecordSrc()
 			m_strVodIp.Format(_T("%s"), m_vodServerInfo[0].szVodIp);
 			m_nVodPort = m_vodServerInfo[0].nVodPort;
 
-			CMainPage* pDlg = (CMainPage*) GetParent();
+			CMainPage* pDlg = m_pMainPage;
 			pDlg->m_strVodIp = m_strVodIp;
 			pDlg->m_nVodPort = m_nVodPort;
 		}
@@ -1108,12 +1107,9 @@ void CDlgPlayList::SetGuInfo(CU_NET_LIB::GUINFO *pGuInfo)
 	m_pGuInfo = pGuInfo;
 	
 
-	UpdateData();
 	m_szPuid = pGuInfo->PUID;
 	m_szGuid = pGuInfo->GUID;
 	m_szGuName = pGuInfo->GUName;
-	UpdateData(FALSE);
-
 }
 
 
@@ -1403,4 +1399,9 @@ void CDlgPlayList::OnClose()
 	ShowWindow(SW_HIDE);
 	
 	//CDialog::OnClose();
+}
+
+void CDlgPlayList::SetMainPage(CMainPage *pMainPage)
+{
+	m_pMainPage = pMainPage;
 }

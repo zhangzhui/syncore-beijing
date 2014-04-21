@@ -25,6 +25,7 @@ CVideoInstance::~CVideoInstance()
 {
 	m_hVideo = NULL;
 }
+
 void  CVideoInstance::WaitForThread()
 {
 	DWORD dwStart = GetTickCount();
@@ -153,9 +154,8 @@ BOOL  CVideoInstance::Stop(LONG lHandle)
 			}
 			CU_NET_LIB::RealVideoPreviewStop(g_dwServerId, m_hVideo);	//只有在重连
 			// 清理工作
-//			g_VideoMng.ReleaseInstance(this);
+			g_VideoMng.ReleaseInstance(this);
 			m_hVideo = NULL; 
-	//		delete this;
 		}
 	}
     return TRUE;

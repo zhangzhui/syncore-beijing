@@ -13,6 +13,15 @@ CVideoManage::CVideoManage()
 
 CVideoManage::~CVideoManage()
 {
+	m_csList.Lock();
+	POSITION pos = m_List.GetHeadPosition();
+	while(pos)
+	{
+		CVideoInstance* pIns = m_List.GetAt(pos);
+		delete pIns;
+	}
+	m_List.RemoveAll();
+	m_csList.Unlock();
 }
 // CVideoManage ³ÉÔ±º¯Êý
 POSITION  CVideoManage::FindInsByGuid(LPCTSTR lpszGuid)
@@ -59,6 +68,7 @@ void CVideoManage::ReleaseInstance(CVideoInstance* pInstance)
 		if(pIns == pInstance)
 		{
 			m_List.RemoveAt(pos);
+			delete pInstance;
 			break;
 		}
 		else

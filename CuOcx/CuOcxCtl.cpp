@@ -147,10 +147,10 @@ CCuOcxCtrl::CCuOcxCtrl()
 CCuOcxCtrl::~CCuOcxCtrl()
 {
 	// TODO: Cleanup your control's instance data here.
-	if (m_pMainPage && m_pMainPage->GetSafeHwnd())
-	{
-		m_pMainPage->PostMessage(WM_DESTROY, NULL, NULL);
-	}
+// 	if (m_pMainPage && m_pMainPage->GetSafeHwnd())
+// 	{
+// 		m_pMainPage->PostMessage(WM_DESTROY, NULL, NULL);
+// 	}
 }
 
 
