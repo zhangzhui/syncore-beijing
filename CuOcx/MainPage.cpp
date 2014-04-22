@@ -778,7 +778,7 @@ BOOL CMainPage::PreTranslateMessage(MSG* pMsg)
 				bRet = GetYTControlCmd(pMsg->message,szCmd,szParam);
 				if ( bRet )
 				{
-					ptz_control_t *ptz_control = (ptz_control_t*) malloc(sizeof(ptz_control_t)); 
+					ptz_control_t *ptz_control = new ptz_control_t; 
 					
 					ptz_control->guInfo = m_GuInfo;
 					memset(ptz_control->param,0,sizeof(ptz_control->param));
@@ -794,7 +794,10 @@ BOOL CMainPage::PreTranslateMessage(MSG* pMsg)
 					sprintf(ptz_control->msgtype,"ControlPTZ");
 					
 					// 线程处理 //
-					AfxBeginThread(ptzControlThread, ptz_control, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+// 					if (!g_CameraCtrl.PushBack(ptz_control))
+// 					{
+// 						delete ptz_control;
+// 					}
 					Sleep(1);
 				}
 			}
@@ -1037,18 +1040,6 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 */
 	}
 	return bSelFlag;
-}
-
-UINT AFX_CDECL CMainPage::ptzControlThread(LPVOID lParam)
-{
-	ptz_control_t ptz_control =  *((ptz_control_t*)lParam);
-	delete  (ptz_control_t*)lParam;
-	
-	CU_NET_LIB::DomeControl(g_dwServerId, ptz_control.guInfo, /*(const unsigned short *)*/ptz_control.csgIp,  ptz_control.csgport,
-		ptz_control.msgtype, ptz_control.speed, ptz_control.cmd, ptz_control.param);
-	
-	TRACE(_T("PTZ=============== msgtype: %s, cmd: %s, param: %s, speed: %d\n"), ptz_control.msgtype, ptz_control.cmd, ptz_control.param, ptz_control.speed);
-	return 0x00;
 }
 
 void CMainPage::OnBtnReplay() 

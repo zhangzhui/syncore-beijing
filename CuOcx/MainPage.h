@@ -62,7 +62,6 @@ protected:
 	void  WaitForThreadStatus();
 
 	static UINT Thread_Status(LPVOID lParam);
-	static UINT AFX_CDECL ptzControlThread(LPVOID lParam);
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
@@ -115,17 +114,6 @@ public:
     int m_nVodPort;
 	CDlgPlayList m_dlgPlayList;
 };
-
-typedef struct _ptz_control_t
-{
-	char    csgIp[32];	
-	char    cmd[32];
-	char    param[32];
-	char    msgtype[32];
-	UINT    csgport;
-	int     speed;
-	CU_NET_LIB::GUINFO  guInfo;
-}ptz_control_t;
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

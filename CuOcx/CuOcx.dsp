@@ -196,6 +196,10 @@ SOURCE="$(InputPath)"
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CameraControlThread.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CuOcx.cpp
 # End Source File
 # Begin Source File
@@ -261,6 +265,10 @@ SOURCE=.\VideoManage.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\CameraControlThread.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CuOcx.h
 # End Source File
 # Begin Source File
@@ -302,6 +310,10 @@ SOURCE=.\Resource.h
 # Begin Source File
 
 SOURCE=.\StdAfx.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Syncronization.h
 # End Source File
 # Begin Source File
 

@@ -22,17 +22,17 @@ public:
 };
 
 template<class T, class SYNCH_STRATEGY>
-class SyncObejct : public T, public SYNCH_STRATEGY
+class SyncObject : public T, public SYNCH_STRATEGY
 {
 public:
 	typedef T Super;
 	typedef SYNCH_STRATEGY Synch;
-	SyncObejct()
+	SyncObject()
 	{
 
 	}
 
-	~SyncObejct()
+	~SyncObject()
 	{
 
 	}

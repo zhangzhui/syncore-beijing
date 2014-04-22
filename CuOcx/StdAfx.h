@@ -42,14 +42,6 @@
 #include <objbase.h>
 #include <AFXPRIV2.H>
 
-#include "Syncronization.h"
-#include "VideoManage.h"
-
-#define NTIMEOUT 5000
-#define WM_DOWNLOADMSG  (WM_USER+IDD_DIALOG_DOWNLOAD)
-
-
-
 #import "c:/windows/system32/msxml3.dll"
 using namespace MSXML2;
 
@@ -68,13 +60,33 @@ using namespace MSXML2;
 #pragma comment(lib, "../lib/PlayLib.lib")
 #pragma comment(lib, "../lib/PlaySDK.lib")
 
+typedef struct _ptz_control_t
+{
+	char    csgIp[32];	
+	char    cmd[32];
+	char    param[32];
+	char    msgtype[32];
+	UINT    csgport;
+	int     speed;
+	CU_NET_LIB::GUINFO  guInfo;
+}ptz_control_t;
+
+#include "Syncronization.h"
+#include "VideoManage.h"
+#include "CameraControlThread.h"
+
+#define NTIMEOUT 5000
+#define WM_DOWNLOADMSG  (WM_USER+IDD_DIALOG_DOWNLOAD)
+
+
 extern DWORD g_dwServerId;
 extern DWORD g_dwAudioInstance;
 extern char g_szDomainID[32];
 extern CVideoManage g_VideoMng;
+extern CCameraControlThread g_CameraCtrl;
 
 typedef std::list<CU_NET_LIB::GUINFO*> GUINFO_OCX;
-extern SyncObejct<GUINFO_OCX, CCriticalSection> g_GuInfoList;
+extern SyncObject<GUINFO_OCX, CCriticalSection> g_GuInfoList;
 typedef std::list<CU_NET_LIB::DEVICE_NODE*> DEVICENODE_OCX;
 extern DEVICENODE_OCX g_DeviceNodeList;
 
