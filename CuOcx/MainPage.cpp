@@ -1112,7 +1112,6 @@ void CMainPage::OnDestroy()
 	CDialog::OnDestroy();
 	Sleep(300);
 	// TODO: Add your message handler code here
-	GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd();
 	if (m_bOpenVideo == TRUE)
 	{
 		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_CLOSE_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd()); 
@@ -1124,6 +1123,9 @@ void CMainPage::OnDestroy()
 void CMainPage::OnClose() 
 {
 	// TODO: Add your message handler code here and/or call default
-	m_dlgPlayList.DestroyWindow();
+	if (m_dlgPlayList.GetSafeHwnd())
+	{
+		m_dlgPlayList.DestroyWindow();
+	}
 	CDialog::OnClose();
 }
