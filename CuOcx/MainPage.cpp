@@ -89,6 +89,10 @@ void CMainPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CMainPage)
+	DDX_Control(pDX, IDC_SLIDER_SATURATION, m_sliderSaturation);
+	DDX_Control(pDX, IDC_SLIDER_HUE, m_sliderHue);
+	DDX_Control(pDX, IDC_SLIDER_BRIGHT, m_sliderBright);
+	DDX_Control(pDX, IDC_SLIDER_CONTRAST, m_sliderContrast);
 	DDX_Control(pDX, IDC_STATIC_PREVIEW, m_staticPreview);
 	//}}AFX_DATA_MAP
 }
@@ -112,6 +116,16 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_DOWN, OnBtnDown)
 	ON_BN_CLICKED(IDC_BTN_AUTO, OnBtnAuto)
 	ON_BN_CLICKED(IDC_BTN_REMOTE_PIC, OnBtnRemotePic)
+	ON_BN_CLICKED(IDC_BUTTON_FOCUS1, OnButtonFocus1)
+	ON_BN_CLICKED(IDC_BUTTON_FOCUS2, OnButtonFocus2)
+	ON_BN_CLICKED(IDC_BUTTON_LENS1, OnButtonLens1)
+	ON_BN_CLICKED(IDC_BUTTON_LENS2, OnButtonLens2)
+	ON_BN_CLICKED(IDC_BUTTON_ZOOM1, OnButtonZoom1)
+	ON_BN_CLICKED(IDC_BUTTON_ZOOM2, OnButtonZoom2)
+	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_BRIGHT, OnReleasedcaptureSliderBright)
+	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_CONTRAST, OnReleasedcaptureSliderContrast)
+	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_HUE, OnReleasedcaptureSliderHue)
+	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_SATURATION, OnReleasedcaptureSliderSaturation)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -817,7 +831,7 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 			bSelFlag = TRUE;
 
 		}
-/*
+
 		//--------------------------------------------------
 		// 图像部份
 		//--------------------------------------------------
@@ -880,7 +894,7 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 			
 			bSelFlag = TRUE;
 		}
-*/
+
 	}
 	else    //---非左键消息---//
 	{
@@ -929,7 +943,7 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 			
 		}
 
-/*
+
 		//--------------------------------------------------
 		// 图像部份
 		//--------------------------------------------------
@@ -992,7 +1006,7 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 
 			bSelFlag = TRUE;
 		}
-*/
+
 	}
 	return bSelFlag;
 }
@@ -1171,4 +1185,90 @@ void CMainPage::OnBtnRemotePic()
 	{
 		AfxMessageBox("操作失败!");
 	}
+}
+
+void CMainPage::OnButtonFocus1() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnButtonFocus2() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnButtonLens1() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnButtonLens2() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnButtonZoom1() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnButtonZoom2() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnReleasedcaptureSliderBright(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	SetVideoParam();
+	*pResult = 0;
+}
+
+void CMainPage::OnReleasedcaptureSliderContrast(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	SetVideoParam();
+	*pResult = 0;
+}
+
+void CMainPage::OnReleasedcaptureSliderHue(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	SetVideoParam();
+	*pResult = 0;
+}
+
+void CMainPage::OnReleasedcaptureSliderSaturation(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	SetVideoParam();
+	*pResult = 0;
+}
+
+void CMainPage::SetVideoParam()
+{
+	CU_NET_LIB::GUINFO *pGuInfo = &m_GuInfo;
+	if(pGuInfo == NULL)
+		return;
+	
+	int contrast, bright, hue, saturation;
+	contrast = m_sliderContrast.GetPos();
+	bright = m_sliderBright.GetPos();
+	hue = m_sliderHue.GetPos();
+	saturation = m_sliderSaturation.GetPos();
+	
+	HRESULT hr;
+	hr = CU_NET_LIB::SetPuImageDisplayPara(g_dwServerId, *pGuInfo, contrast, bright, hue, saturation);
+	if(hr != ST_OK )
+	{
+		//PromptSetFailed;
+		return;
+	}
+	//PromptSetSucceeded;
 }

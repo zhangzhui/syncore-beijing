@@ -34,6 +34,10 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CMainPage)
 	enum { IDD = IDD_PROPPAGE_MAIN };
+	CSliderCtrl	m_sliderSaturation;
+	CSliderCtrl	m_sliderHue;
+	CSliderCtrl	m_sliderBright;
+	CSliderCtrl	m_sliderContrast;
 	CStatic	m_staticPreview;
 	//}}AFX_DATA
 
@@ -61,6 +65,7 @@ protected:
 	BOOL GetYTControlCmd(int iMessage, char *szCmd, char *szParam);
 	void  WaitForThreadStatus();
 	void ProcessCameraDirection();
+	void SetVideoParam();
 
 	static UINT Thread_Status(LPVOID lParam);
 	// Generated message map functions
@@ -82,6 +87,16 @@ protected:
 	afx_msg void OnBtnDown();
 	afx_msg void OnBtnAuto();
 	afx_msg void OnBtnRemotePic();
+	afx_msg void OnButtonFocus1();
+	afx_msg void OnButtonFocus2();
+	afx_msg void OnButtonLens1();
+	afx_msg void OnButtonLens2();
+	afx_msg void OnButtonZoom1();
+	afx_msg void OnButtonZoom2();
+	afx_msg void OnReleasedcaptureSliderBright(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnReleasedcaptureSliderContrast(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnReleasedcaptureSliderHue(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnReleasedcaptureSliderSaturation(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

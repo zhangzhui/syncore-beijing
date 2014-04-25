@@ -30,6 +30,16 @@
 #define IDC_BTN_OPENVOICE               214
 #define IDC_BTN_REMOTE_PIC              215
 #define IDC_BUTTON_STOP                 1008
+#define IDC_BUTTON_LENS1                1017
+#define IDC_BUTTON_LENS2                1018
+#define IDC_BUTTON_FOCUS1               1019
+#define IDC_BUTTON_FOCUS2               1020
+#define IDC_BUTTON_ZOOM1                1021
+#define IDC_BUTTON_ZOOM2                1022
+#define IDC_SLIDER_BRIGHT               1023
+#define IDC_SLIDER_CONTRAST             1024
+#define IDC_SLIDER_HUE                  1025
+#define IDC_SLIDER_SATURATION           1026
 #define IDC_BUTTON_QUERY                1033
 #define IDC_BTN_PRE                     1060
 #define IDC_BTN_NEXT                    1061
