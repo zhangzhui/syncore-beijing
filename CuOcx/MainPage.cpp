@@ -387,9 +387,12 @@ void CMainPage::OnBtnOpenVideo()
 		}
 	}
 
-	StartStream(*m_pDeviceNode);
-	m_bOpenVideo = TRUE;
-	GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(FALSE);
+	if (m_pDeviceNode != NULL)
+	{
+		StartStream(*m_pDeviceNode);
+		m_bOpenVideo = TRUE;
+		GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(FALSE);
+	}
 }
 
 void CMainPage::StartStream(CU_NET_LIB::DEVICE_NODE devInfo)
