@@ -794,10 +794,7 @@ BOOL CMainPage::PreTranslateMessage(MSG* pMsg)
 					sprintf(ptz_control->msgtype,"ControlPTZ");
 					
 					// 线程处理 //
-					if (!g_CameraCtrl.PushBack(ptz_control))
-					{
-						delete ptz_control;
-					}
+					m_CameraCtrl.PushBack(ptz_control);
 					Sleep(1);
 				}
 			}

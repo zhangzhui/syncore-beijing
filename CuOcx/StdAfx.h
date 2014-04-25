@@ -83,7 +83,6 @@ extern DWORD g_dwServerId;
 extern DWORD g_dwAudioInstance;
 extern char g_szDomainID[32];
 extern CVideoManage g_VideoMng;
-extern CCameraControlThread g_CameraCtrl;
 
 typedef std::list<CU_NET_LIB::GUINFO*> GUINFO_OCX;
 extern SyncObject<GUINFO_OCX, CCriticalSection> g_GuInfoList;

@@ -138,17 +138,17 @@ BOOL CCameraControlThread::PushBack(ptz_control_t *p_ctrl_t)
 	USE_SYNCHRONIZE
 	{
 		CSingleLock sl(&m_ptzQueue);
-		if (!sl.Lock(NTIMEOUT))
+		if (sl.Lock(NTIMEOUT))
 		{
-			return FALSE;
+			if (m_bClosing == FALSE)//m_bClosing == TRUE表示不再接收数据
+			{
+				m_ptzQueue.push_back(p_ctrl_t);
+				return TRUE;
+			}
 		}
-		if (m_bClosing == TRUE)
-		{
-			return FALSE;//不再接收数据
-		}
-		m_ptzQueue.push_back(p_ctrl_t);
 	}
-	return TRUE;
+	delete p_ctrl_t;
+	return FALSE;
 }
 
 ptz_control_t* CCameraControlThread::PopFront()

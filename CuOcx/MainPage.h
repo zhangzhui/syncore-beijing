@@ -113,6 +113,8 @@ public:
 	CString m_strVodIp;
     int m_nVodPort;
 	CDlgPlayList m_dlgPlayList;
+
+	CCameraControlThread m_CameraCtrl;
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
