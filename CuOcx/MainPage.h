@@ -81,6 +81,7 @@ protected:
 	afx_msg void OnBtnLeft();
 	afx_msg void OnBtnDown();
 	afx_msg void OnBtnAuto();
+	afx_msg void OnBtnRemotePic();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

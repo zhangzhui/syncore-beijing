@@ -111,6 +111,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_LEFT, OnBtnLeft)
 	ON_BN_CLICKED(IDC_BTN_DOWN, OnBtnDown)
 	ON_BN_CLICKED(IDC_BTN_AUTO, OnBtnAuto)
+	ON_BN_CLICKED(IDC_BTN_REMOTE_PIC, OnBtnRemotePic)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -1146,5 +1147,28 @@ void CMainPage::ProcessCameraDirection()
 		
 		m_CameraCtrl.PushBack(ptz_control);
 		Sleep(1);
+	}
+}
+
+void CMainPage::OnBtnRemotePic() 
+{
+	// TODO: Add your control notification handler code here
+	if(!m_bStreamOpenFlag)
+	{
+		return;
+	}
+	
+    CString strLoadText;
+	CU_NET_LIB::GUINFO guInfo = m_GuInfo;
+	
+	//前端抓拍接口---
+	HRESULT hr = CU_NET_LIB::RemoteCapturePic(g_dwServerId, guInfo);
+	if(ST_OK == hr)
+	{
+		AfxMessageBox("操作成功!",MB_OK | MB_ICONINFORMATION);
+	}
+	else
+	{
+		AfxMessageBox("操作失败!");
 	}
 }
