@@ -60,6 +60,7 @@ protected:
 	void StopChart();
 	BOOL GetYTControlCmd(int iMessage, char *szCmd, char *szParam);
 	void  WaitForThreadStatus();
+	void ProcessCameraDirection();
 
 	static UINT Thread_Status(LPVOID lParam);
 	// Generated message map functions
@@ -75,6 +76,11 @@ protected:
 	afx_msg void OnBtnReplay();
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
+	afx_msg void OnBtnUp();
+	afx_msg void OnBtnRight();
+	afx_msg void OnBtnLeft();
+	afx_msg void OnBtnDown();
+	afx_msg void OnBtnAuto();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

@@ -113,7 +113,7 @@ UINT AFX_CDECL CCameraControlThread::ptzControlThread(LPVOID lParam)
 			TRACE(_T("PTZ=============== msgtype: %s, cmd: %s, param: %s, speed: %d\n"), ptz_control.msgtype, ptz_control.cmd, ptz_control.param, ptz_control.speed);
 		}
 
-		if (pCtlThread->WaitToExit(NTIMEOUT))
+		if (pCtlThread->WaitToExit(100))
 		{
 			break;
 		}

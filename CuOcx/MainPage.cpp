@@ -106,6 +106,11 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_REPLAY, OnBtnReplay)
 	ON_WM_DESTROY()
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BTN_UP, OnBtnUp)
+	ON_BN_CLICKED(IDC_BTN_RIGHT, OnBtnRight)
+	ON_BN_CLICKED(IDC_BTN_LEFT, OnBtnLeft)
+	ON_BN_CLICKED(IDC_BTN_DOWN, OnBtnDown)
+	ON_BN_CLICKED(IDC_BTN_AUTO, OnBtnAuto)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -752,57 +757,6 @@ void CMainPage::StopChart()
 BOOL CMainPage::PreTranslateMessage(MSG* pMsg) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-	BOOL bRet;
-	char szCmd[24] = {0};
-	char szParam[24] = {0};
-	
-	switch(pMsg->message)
-	{
-	case WM_LBUTTONDOWN:
-		{
-			int nCtrlID;
-			if (GetFocus())
-			{
-				nCtrlID = GetFocus()->GetDlgCtrlID();
-			}
-
-			if (nCtrlID == IDC_BTN_UP ||
-				nCtrlID == IDC_BTN_DOWN ||
-				nCtrlID == IDC_BTN_LEFT ||
-				nCtrlID == IDC_BTN_RIGHT ||
-				nCtrlID == IDC_BTN_AUTO)
-			{
-				if (m_GuInfo.nptzlevel == 0)
-				{
-					return FALSE;
-				}
-				
-				
-				bRet = GetYTControlCmd(pMsg->message,szCmd,szParam);
-				if ( bRet )
-				{
-					ptz_control_t *ptz_control = new ptz_control_t; 
-					
-					ptz_control->guInfo = m_GuInfo;
-					memset(ptz_control->param,0,sizeof(ptz_control->param));
-					memset(ptz_control->cmd,0,sizeof(ptz_control->cmd));
-					
-					strncpy(ptz_control->cmd, szCmd, sizeof(ptz_control->cmd));
-					strncpy(ptz_control->param, szParam, sizeof(ptz_control->param));
-// 					ptz_control->speed = m_ctrlSpeed.GetPos() / 10; 
-					
-					strncpy(ptz_control->csgIp, (const char *)m_strServerIPAddr.GetBuffer(m_strServerIPAddr.GetLength()), sizeof(ptz_control->csgIp));
-					ptz_control->csgport =  m_nServerPort + PORT_CSG_INCREASE_NUM;
-					
-					sprintf(ptz_control->msgtype,"ControlPTZ");
-					
-					// 线程处理 //
-					m_CameraCtrl.PushBack(ptz_control);
-					Sleep(1);
-				}
-			}
-		}
-	}
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
@@ -1125,7 +1079,72 @@ void CMainPage::OnClose()
 	// TODO: Add your message handler code here and/or call default
 	if (m_dlgPlayList.GetSafeHwnd())
 	{
-		m_dlgPlayList.DestroyWindow();
+		m_dlgPlayList.SendMessage(WM_CLOSE, NULL, NULL);
 	}
 	CDialog::OnClose();
+}
+
+void CMainPage::OnBtnUp() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnBtnRight() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnBtnLeft() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnBtnDown() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::OnBtnAuto() 
+{
+	// TODO: Add your control notification handler code here
+	ProcessCameraDirection();
+}
+
+void CMainPage::ProcessCameraDirection()
+{
+	BOOL bRet;
+	char szCmd[24] = {0};
+	char szParam[24] = {0};
+	
+	if (m_GuInfo.nptzlevel == 0)
+	{
+		return;
+	}
+	
+	
+	bRet = GetYTControlCmd(WM_LBUTTONDOWN, szCmd, szParam);
+	if ( bRet )
+	{
+		ptz_control_t *ptz_control = new ptz_control_t; 
+		
+		ptz_control->guInfo = m_GuInfo;
+		memset(ptz_control->param,0,sizeof(ptz_control->param));
+		memset(ptz_control->cmd,0,sizeof(ptz_control->cmd));
+		
+		strncpy(ptz_control->cmd, szCmd, sizeof(ptz_control->cmd));
+		strncpy(ptz_control->param, szParam, sizeof(ptz_control->param));
+// 		ptz_control->speed = m_ctrlSpeed.GetPos() / 10; 
+		
+		strncpy(ptz_control->csgIp, (const char *)m_strServerIPAddr.GetBuffer(m_strServerIPAddr.GetLength()), sizeof(ptz_control->csgIp));
+		ptz_control->csgport =  m_nServerPort + PORT_CSG_INCREASE_NUM;
+		
+		sprintf(ptz_control->msgtype,"ControlPTZ");
+		
+		m_CameraCtrl.PushBack(ptz_control);
+		Sleep(1);
+	}
 }
