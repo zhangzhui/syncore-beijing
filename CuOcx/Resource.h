@@ -29,6 +29,7 @@
 #define IDC_BUTTON1                     214
 #define IDC_BTN_OPENVOICE               214
 #define IDC_BTN_REMOTE_PIC              215
+#define IDC_BTN_LOCALPIC                216
 #define IDC_BUTTON_STOP                 1008
 #define IDC_BUTTON_LENS1                1017
 #define IDC_BUTTON_LENS2                1018
@@ -82,7 +83,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        202
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         216
+#define _APS_NEXT_CONTROL_VALUE         217
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

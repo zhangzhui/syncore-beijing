@@ -5,6 +5,7 @@
 #include "CuOcx.h"
 #include "MainPage.h"
 #include "VideoInstance.h"
+#include "DlgPicView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,6 +71,13 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CMainPage)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_strUserName.Empty();
+	m_strPassWord.Empty();
+	m_strServerIPAddr.Empty();
+	m_nServerPort = 0;
+	m_strWorkDir.Empty();
+	m_strCameraID.Empty();
+
 	m_pVideoIns = NULL;
 
 	m_bStreamOpenFlag = FALSE;
@@ -109,7 +117,6 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_OPENVOICE, OnBtnOpenvoice)
 	ON_BN_CLICKED(IDC_BTN_REPLAY, OnBtnReplay)
 	ON_WM_DESTROY()
-	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BTN_UP, OnBtnUp)
 	ON_BN_CLICKED(IDC_BTN_RIGHT, OnBtnRight)
 	ON_BN_CLICKED(IDC_BTN_LEFT, OnBtnLeft)
@@ -126,6 +133,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_CONTRAST, OnReleasedcaptureSliderContrast)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_HUE, OnReleasedcaptureSliderHue)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_SATURATION, OnReleasedcaptureSliderSaturation)
+	ON_BN_CLICKED(IDC_BTN_LOCALPIC, OnBtnLocalpic)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -183,7 +191,11 @@ void CMainPage::SetCameraID(LPCTSTR strCameraID)
 void CMainPage::PostNcDestroy()
 {
 	// TODO: Add your specialized code here and/or call the base class
-	Sleep(300);
+	if (m_dlgPlayList.GetSafeHwnd())
+	{
+		m_dlgPlayList.SendMessage(WM_CLOSE, NULL, NULL);
+	}
+
 	if(m_bClientStartUp == TRUE)
 	{
 		CU_NET_LIB::ClientCleanUp(g_dwServerId);
@@ -1089,16 +1101,6 @@ void CMainPage::OnDestroy()
 	SendMessage(WM_CLEARDEVICELIST, NULL, NULL);//清除动态申请的内存
 }
 
-void CMainPage::OnClose() 
-{
-	// TODO: Add your message handler code here and/or call default
-	if (m_dlgPlayList.GetSafeHwnd())
-	{
-		m_dlgPlayList.SendMessage(WM_CLOSE, NULL, NULL);
-	}
-	CDialog::OnClose();
-}
-
 void CMainPage::OnBtnUp() 
 {
 	// TODO: Add your control notification handler code here
@@ -1271,4 +1273,89 @@ void CMainPage::SetVideoParam()
 		return;
 	}
 	//PromptSetSucceeded;
+}
+
+void CMainPage::OnBtnLocalpic() 
+{
+	// TODO: Add your control notification handler code here
+	CString strLoadText;
+	if(m_bStreamOpenFlag && m_play_id != 0)
+	{
+		if(0 == (m_GuInfo.right & RIGHT_LOCALRECORD))
+		{
+			return;
+		}
+		
+		char  szPath[1024] = {0};
+		CString strPath;
+		_bstr_t bstrFile;
+		
+		if (!m_strWorkDir.IsEmpty())
+		{
+			sprintf(szPath, "%s", m_strWorkDir.GetBuffer(m_strWorkDir.GetLength()));
+		}
+		else
+		{
+			sprintf(szPath, "%s", (LPCTSTR)"");
+		}
+		
+		// 根据GUID和日期时间确定文件名称
+		CU_NET_LIB::GUINFO guInfo;
+		guInfo = m_GuInfo;
+		
+		try
+		{
+			SYSTEMTIME systime;
+			::GetLocalTime(&systime);
+			// 检查路径, 修正路径
+			char szFilePath[1024] = {0};
+			int nLen = (int)strlen(szPath);
+			if(nLen <=0)
+			{
+				//当前文件夹'.\'也要写上---
+				strPath.Format("\\%s%s\\Picture\\%04d%02d%02d\\", "", guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+				sprintf(szFilePath, "%s", (LPCTSTR)strPath);
+			}
+			else
+			{
+				if(szPath[nLen-1] != '\\')
+				{
+					strcat(szPath, "\\");
+				}
+				strPath.Format("%s%s\\Picture\\%04d%02d%02d\\", szPath, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+				sprintf(szFilePath, "%s", strPath);
+			}			
+			
+			if(_access(szFilePath, 00) !=0 )
+			{
+				BOOL bResult = MakeDir(szFilePath);
+				if( bResult == FALSE )
+				{
+					AfxMessageBox(_T("创建文件夹失败，请重新操作！"), MB_OK | MB_ICONERROR);
+					return;
+				}
+			}
+			
+			CString strFile;
+			strFile.Format(_T("%s%02d_%02d_%02d.bmp"), (LPCTSTR)strPath, systime.wHour,systime.wMinute,systime.wSecond);
+			bstrFile = _bstr_t((LPCTSTR)strFile);
+			
+			// 抓拍接口----
+			player_capturePicture(m_play_id, bstrFile);
+		}
+		catch(...)
+		{
+			AfxMessageBox("异常错误, 请检查快照保存路径的设置项");
+			return;
+		}
+		
+		
+		//---------------------------------------
+		// 显示图片
+		//---------------------------------------
+		Sleep(300);
+		CDlgPicView dlg;
+		dlg.SetFilePath((const char *)bstrFile);
+		dlg.DoModal();
+	}
 }

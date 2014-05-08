@@ -80,7 +80,6 @@ protected:
 	afx_msg void OnBtnOpenvoice();
 	afx_msg void OnBtnReplay();
 	afx_msg void OnDestroy();
-	afx_msg void OnClose();
 	afx_msg void OnBtnUp();
 	afx_msg void OnBtnRight();
 	afx_msg void OnBtnLeft();
@@ -97,6 +96,7 @@ protected:
 	afx_msg void OnReleasedcaptureSliderContrast(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnReleasedcaptureSliderHue(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnReleasedcaptureSliderSaturation(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBtnLocalpic();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
