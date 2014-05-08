@@ -84,6 +84,9 @@ extern DWORD g_dwAudioInstance;
 extern char g_szDomainID[32];
 extern CVideoManage g_VideoMng;
 
+extern unsigned char g_HK8016_HeadBuf[40];
+extern unsigned char g_HK8116_HeadBuf[40];
+
 typedef std::list<CU_NET_LIB::GUINFO*> GUINFO_OCX;
 extern SyncObject<GUINFO_OCX, CCriticalSection> g_GuInfoList;
 typedef std::list<CU_NET_LIB::DEVICE_NODE*> DEVICENODE_OCX;

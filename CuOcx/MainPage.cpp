@@ -33,20 +33,20 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 		pDlg->m_nCountTest = pHead->frame_no;
 	}
 	//记录到文件
-// 	if(!pDlg->m_bRecord)
-// 		return;
-// 	
-// 	if (pDlg->m_bSwitchFile)
-// 	{
-// 		frame_head_t *pHead = (frame_head_t *)lpBuf;
-// 		if (pHead->frame_type == I_FRAME_TYPE)
-// 			pDlg->CreateRecordFile();
-// 	}	
-// 	if (pDlg->m_file != NULL)
-// 		fwrite((PBYTE)lpBuf + sizeof(frame_head_t), lSize - sizeof(frame_head_t), 1, pDlg->m_file);
-// 	
-// 	if (pDlg->m_hFileRec != NULL)
-// 		AVI_fwrite(pDlg->m_hFileRec, lpBuf);
+	if(!pDlg->m_bRecord)
+		return;
+	
+	if (pDlg->m_bSwitchFile)
+	{
+		frame_head_t *pHead = (frame_head_t *)lpBuf;
+		if (pHead->frame_type == I_FRAME_TYPE)
+			pDlg->CreateRecordFile();
+	}	
+	if (pDlg->m_file != NULL)
+		fwrite((PBYTE)lpBuf + sizeof(frame_head_t), lSize - sizeof(frame_head_t), 1, pDlg->m_file);
+	
+	if (pDlg->m_hFileRec != NULL)
+		AVI_fwrite(pDlg->m_hFileRec, lpBuf);
 }
 
 void RecAudioDataFunc(long lHandle, void* lpBuf, long lSize, long lDecoderID)
@@ -134,6 +134,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_HUE, OnReleasedcaptureSliderHue)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_SATURATION, OnReleasedcaptureSliderSaturation)
 	ON_BN_CLICKED(IDC_BTN_LOCALPIC, OnBtnLocalpic)
+	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -181,6 +182,13 @@ void CMainPage::SetServerPort(long nPort)
 void CMainPage::SetWorkDir(LPCTSTR strWorkDir)
 {
 	m_strWorkDir = strWorkDir;
+	if (!m_strWorkDir.IsEmpty())
+	{
+		if (m_strWorkDir.GetAt(m_strWorkDir.GetLength() - 1) == _T('\\'))
+		{
+			m_strWorkDir.Delete(m_strWorkDir.GetLength() - 1, 1);
+		}
+	}
 }
 
 void CMainPage::SetCameraID(LPCTSTR strCameraID)
@@ -1358,4 +1366,217 @@ void CMainPage::OnBtnLocalpic()
 		dlg.SetFilePath((const char *)bstrFile);
 		dlg.DoModal();
 	}
+}
+
+void CMainPage::OnBtnLocalrecord() 
+{
+	// TODO: Add your control notification handler code here
+	if (m_bRecord == FALSE)
+	{
+		DoRecord();
+		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("停止"));
+		m_bRecord = TRUE;
+	}
+	else
+	{
+		m_bRecord = FALSE;
+		Sleep(20);
+		CloseRecordFile();
+		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("本地录像"));
+	}
+}
+
+void CMainPage::DoRecord()
+{
+	CString strLoadText,strLoadText1;
+	// 根据设定路径和其他要素创建录象文件
+	CString strPath = _T("");
+	CString strFile = _T("");
+	CString strDir = _T("");
+	char  szFilePath[1024] = {0};
+	CU_NET_LIB::GUINFO guInfo;
+	guInfo = m_DevInfo.guInfo;
+	m_bSwitchFile = FALSE;
+	
+	if (!m_strWorkDir.IsEmpty())
+	{
+		strDir = m_strWorkDir;
+	}
+	else
+	{
+		strDir = _T(".");
+	}
+	SYSTEMTIME systime;
+	::GetLocalTime(&systime);
+	strPath.Format("%s\\%s\\Record\\%04d%02d%02d\\", strDir, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+	strFile.Format("%s%02d_%02d_%02d%s", strPath, systime.wHour,systime.wMinute,systime.wSecond,
+		(LPCTSTR)GetRecFileExt(guInfo.lManufactType));
+	
+	sprintf(szFilePath, "%s", (LPCTSTR)strPath);
+	
+	CString strMsg = _T("");
+	try
+	{
+		int nPos = -1;
+		int nStart = 0;
+		
+		if(_access(szFilePath,0)!=0)   
+			MakeDir(szFilePath);
+		
+		sprintf(szFilePath, "%s", strFile);
+		
+		if (m_lManufactType == HK8016_PLAY_SDK)
+		{
+			m_file = fopen(szFilePath, _T("wb"));
+			if(!m_file)
+				return;
+			
+			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			{
+				fclose((FILE*)m_file);
+				m_file = NULL;
+				return;
+			}
+		}
+		else if (m_lManufactType == HK8116_PLAY_SDK)
+		{
+			m_file = fopen(szFilePath, _T("wb"));
+			if(!m_file)
+				return;
+			
+			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			{
+				fclose((FILE*)m_file);
+				m_file = NULL;
+				return;
+			}
+		}
+		else
+		{
+			m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+			if(m_hFileRec == NULL)
+			{
+				m_hFileRec = NULL;
+				strMsg.Format(_T("创建录象文件失败！\nErrCode:%d"), ::GetLastError());
+				AfxMessageBox(strMsg);
+				return;
+			}
+			
+		}
+	}
+	catch(...)
+	{
+		m_hFileRec = NULL;
+		AfxMessageBox(_T("创建录象文件失败！"));
+		return;
+	}
+	TRACE("Command: Start Record!!!!\n");
+	m_bRecord = !m_bRecord;//切换录像状态
+}
+
+CString CMainPage::GetRecFileExt(long lCompanyCode)
+{
+	CString strRecFileExt = _T(".avi");
+	if (lCompanyCode == HK8016_PLAY_SDK || lCompanyCode == HK8116_PLAY_SDK)
+		strRecFileExt = _T(".hk");
+	else if (lCompanyCode == HB_PLAY_SDK)
+		strRecFileExt = _T(".hb");
+	else if (lCompanyCode == DH_PLAY_SDK)
+		strRecFileExt = _T(".dh");
+	return strRecFileExt;
+}
+
+void CMainPage::CloseRecordFile()
+{
+	m_bSwitchFile = FALSE;
+	Sleep(200);
+
+	if(m_hFileRec != NULL)
+	{ 
+		AVI_fclose(m_hFileRec);
+		m_hFileRec = NULL;
+	}
+	if (m_file != NULL)
+	{
+		fclose((FILE*)m_file);
+		m_file = NULL;
+	}
+}
+
+BOOL CMainPage::CreateRecordFile()
+{
+	CloseRecordFile();
+    CString strLoadText;
+	CString  strPath = _T("");
+	CString  strFile = _T("");
+	char szFilePath[510] = {0};
+	
+	CU_NET_LIB::GUINFO guInfo = m_DevInfo.guInfo;
+	
+	SYSTEMTIME systime;
+	::GetLocalTime(&systime);
+	strPath.Format(".\\%s\\Record\\%04d%02d%02d\\", guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+	strFile.Format("%s%02d_%02d_%02d%s", strPath, systime.wHour,systime.wMinute,systime.wSecond,
+		(LPCTSTR)GetRecFileExt(guInfo.lManufactType));
+	sprintf(szFilePath, "%s", (LPCTSTR)strPath);
+	
+	CString strMsg = _T("");
+	try
+	{
+		if(_access(szFilePath,0)!=0)   
+			MakeDir(szFilePath);
+		
+		sprintf(szFilePath, "%s", strFile);
+		m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+		if(m_hFileRec == NULL)
+		{
+			m_hFileRec = NULL;
+			return FALSE;
+		}
+		
+		if (m_lManufactType == HK8016_PLAY_SDK)
+		{
+			m_file = fopen(szFilePath, "wb");
+			if(!m_file)
+				return FALSE;
+			
+			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			{
+				fclose((FILE*)m_file);
+				m_file = NULL;
+				return FALSE;
+			}
+		}
+		else if (m_lManufactType == HK8116_PLAY_SDK)
+		{
+			m_file = fopen(szFilePath, "wb");
+			if(!m_file)
+				return FALSE;
+			
+			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			{
+				fclose((FILE*)m_file);
+				m_file = NULL;
+				return FALSE;
+			}
+		}
+		else
+		{
+			m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+			if(m_hFileRec == NULL)
+			{
+				m_hFileRec = NULL;
+				strMsg.Format("创建录象文件失败! ErrCode:%d\n", ::GetLastError());
+				TRACE("CVideoButton::CreateRecordFile() --- %s\n", strMsg);
+				return FALSE;
+			}
+			
+		}		
+	}
+	catch(...)
+	{
+		m_hFileRec = NULL;
+		return FALSE;
+	}
+	return TRUE;
 }

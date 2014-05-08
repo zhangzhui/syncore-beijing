@@ -31,6 +31,8 @@ public:
 	void SetCameraID(LPCTSTR strCameraID);
 	BOOL MakeDir(char* filePath);
 
+	BOOL CreateRecordFile();
+
 // Dialog Data
 	//{{AFX_DATA(CMainPage)
 	enum { IDD = IDD_PROPPAGE_MAIN };
@@ -66,6 +68,9 @@ protected:
 	void  WaitForThreadStatus();
 	void ProcessCameraDirection();
 	void SetVideoParam();
+	void DoRecord();
+	CString GetRecFileExt(long lCompanyCode);
+	void CloseRecordFile();
 
 	static UINT Thread_Status(LPVOID lParam);
 	// Generated message map functions
@@ -97,6 +102,7 @@ protected:
 	afx_msg void OnReleasedcaptureSliderHue(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnReleasedcaptureSliderSaturation(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBtnLocalpic();
+	afx_msg void OnBtnLocalrecord();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -137,6 +143,11 @@ public:
 	CDlgPlayList m_dlgPlayList;
 
 	CCameraControlThread m_CameraCtrl;
+
+	BOOL m_bRecord;//记录有没有在录像
+	BOOL m_bSwitchFile;
+	FILE* m_file;
+	AVI_FILE m_hFileRec;
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
