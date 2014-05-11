@@ -134,7 +134,12 @@ void CNetVodDlg::OnButtonPlay()
 	char szServerIp[256]={0};
 
 	CDlgPlayList* pDlgPlayList = (CDlgPlayList*) GetParent();
-	CMainPage* pDlg = (CMainPage*)pDlgPlayList->GetParent();
+	CMainPage* pDlg = (CMainPage*)pDlgPlayList->GetMainPage();
+	ASSERT(pDlg != NULL);
+	if (pDlg == NULL)
+	{
+		return;
+	}
 	sprintf(szServerIp, (const char *)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
 	pDlgPlayList->ParseDomain(szServerIp);
 	

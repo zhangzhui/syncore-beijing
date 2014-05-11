@@ -80,22 +80,24 @@ void CDlgPlayList::InitCmbCtrls()
 	//---------------------------------------
 	// 录像来源
 	//---------------------------------------
-	m_ctrlRecordSrc.AddString(_T("本地"));	
-	m_ctrlRecordSrc.AddString(_T("前端设备"));	
+	m_ctrlRecordSrc.AddString(_T("本地"));
+	m_ctrlRecordSrc.AddString(_T("前端设备"));
 	m_ctrlRecordSrc.AddString(_T("网络中心"));
 	
-	m_ctrlRecordSrc.SetCurSel(2);	
+	m_ctrlRecordSrc.SetCurSel(2);
+	SendMessage(WM_COMMAND, MAKEWPARAM(m_ctrlRecordSrc.GetDlgCtrlID(), CBN_SELCHANGE), (LPARAM)m_ctrlRecordSrc.GetSafeHwnd());
 	
 	
     //----------------------------------------
 	// 录像类型
 	//----------------------------------------
-	m_ctrlRecordType.AddString(_T("所有录像"));	
-	m_ctrlRecordType.AddString(_T("定时录像"));	
-	m_ctrlRecordType.AddString(_T("报警录像"));	
-	m_ctrlRecordType.AddString(_T("手动录像"));	
+	m_ctrlRecordType.AddString(_T("所有录像"));
+	m_ctrlRecordType.AddString(_T("定时录像"));
+	m_ctrlRecordType.AddString(_T("报警录像"));
+	m_ctrlRecordType.AddString(_T("手动录像"));
 	
 	m_ctrlRecordType.SetCurSel(0);
+	SendMessage(WM_COMMAND, MAKEWPARAM(m_ctrlRecordType.GetDlgCtrlID(), CBN_SELCHANGE), (LPARAM)m_ctrlRecordType.GetSafeHwnd());
 	
 }
 
@@ -104,7 +106,7 @@ BOOL CDlgPlayList::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-	InitCmbCtrls();
+// 	InitCmbCtrls();
 	
 	if ( m_pGuInfo != NULL )
 	{
@@ -1110,6 +1112,7 @@ void CDlgPlayList::SetGuInfo(CU_NET_LIB::GUINFO *pGuInfo)
 	m_szPuid = pGuInfo->PUID;
 	m_szGuid = pGuInfo->GUID;
 	m_szGuName = pGuInfo->GUName;
+	UpdateData(FALSE);
 }
 
 
@@ -1404,4 +1407,9 @@ void CDlgPlayList::OnClose()
 void CDlgPlayList::SetMainPage(CMainPage *pMainPage)
 {
 	m_pMainPage = pMainPage;
+}
+
+CMainPage* CDlgPlayList::GetMainPage()
+{
+	return m_pMainPage;
 }

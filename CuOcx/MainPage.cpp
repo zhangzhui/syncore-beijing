@@ -1056,6 +1056,7 @@ void CMainPage::OnBtnReplay()
 	
 	m_dlgPlayList.SetMainPage(this);
 	m_dlgPlayList.SetGuInfo(&m_GuInfo);
+	m_dlgPlayList.InitCmbCtrls();
 	m_dlgPlayList.ShowWindow(SW_SHOW);
 }
 

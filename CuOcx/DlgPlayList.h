@@ -56,6 +56,7 @@ public:
 	int GetSearchTypePic();
 
 	void SetMainPage(CMainPage *pMainPage);
+	CMainPage* GetMainPage();
 
 // Overrides
 	// ClassWizard generated virtual function overrides
