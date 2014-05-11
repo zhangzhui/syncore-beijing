@@ -92,10 +92,26 @@ void CDlgPicView::LoadPic()
 	}
     SetWindowText(m_strFileName);
 
+	DWORD dwBegin = GetTickCount();
     CFile file;
-	if (!file.Open(m_strFileName, CFile::modeRead | CFile::shareDenyWrite))
+	while (!file.Open(m_strFileName, CFile::modeRead | CFile::shareDenyWrite))
 	{
-		return;
+		MSG msg;
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (GetTickCount() - dwBegin > 10000)
+		{
+			MessageBox("打开图片文件失败！");
+			return;
+		}
+		else
+		{
+			Sleep(100);
+		}
 	}
 	m_pPicView->LoadPic(file);
 

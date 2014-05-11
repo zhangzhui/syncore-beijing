@@ -16,6 +16,7 @@
 #define WM_GETDEVICELIST (WM_USER + 2)
 #define WM_CLEARDEVICELIST (WM_USER + 3)
 #define WM_CUNETLIB (WM_USER + 4)
+#define WM_SHOWCAPTUREPIC (WM_USER + 5)
 
 class CVideoInstance;
 class CMainPage : public CDialog
@@ -103,6 +104,7 @@ protected:
 	afx_msg void OnReleasedcaptureSliderSaturation(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBtnLocalpic();
 	afx_msg void OnBtnLocalrecord();
+	afx_msg void OnShowCapturePic(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
