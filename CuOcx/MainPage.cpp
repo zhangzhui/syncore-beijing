@@ -159,6 +159,7 @@ BOOL CMainPage::OnInitDialog()
 
 		PostMessage(WM_LOGIN, NULL, NULL);
 	}
+	GetDlgItem(IDC_EDIT_DEVICE)->SetWindowText(m_strCameraID);
 
 	return FALSE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
