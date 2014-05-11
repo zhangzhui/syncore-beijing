@@ -78,7 +78,7 @@ typedef struct _ptz_control_t
 #define NTIMEOUT 5000
 #define WM_DOWNLOADMSG  (WM_USER+IDD_DIALOG_DOWNLOAD)
 
-
+extern BOOL g_InitPlaySDK;
 extern DWORD g_dwServerId;
 extern DWORD g_dwAudioInstance;
 extern char g_szDomainID[32];
@@ -125,6 +125,8 @@ extern DEVICENODE_OCX g_DeviceNodeList;
 #define GU_TYPE_AV_SLAVE		0x06
 
 #define MAX_DEVICE_NODE_NUM	256
+
+#define MAX_FILE_PATH 1024
 
 struct _timerec_seg_t
 {

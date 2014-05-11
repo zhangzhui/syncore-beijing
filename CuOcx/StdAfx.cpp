@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 
+BOOL g_InitPlaySDK = FALSE;
 DWORD g_dwServerId = 0;
 DWORD g_dwAudioInstance = 0;
 char g_szDomainID[32];

@@ -80,14 +80,18 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 
 	m_pVideoIns = NULL;
 
+	m_hFileRec = NULL;
+	m_file = NULL;
+	m_bRecord = FALSE;//刚开始是没有开始录像的
+
 	m_bStreamOpenFlag = FALSE;
 	m_play_id = 0;
 	m_lManufactType = 0;
 	m_pDeviceNode = NULL;
 	m_bLoginFlag = TRUE;
-	ZeroMemory(&m_GuInfo,sizeof(CU_NET_LIB::GUINFO));
+	ZeroMemory(&m_GuInfo, sizeof(CU_NET_LIB::GUINFO));
 	m_bOpenVideo = FALSE;
-	ZeroMemory(&m_DevInfo,sizeof(CU_NET_LIB::DEVICE_NODE));
+	ZeroMemory(&m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
 	m_bVoice = FALSE;
 	m_bSoundAllow = FALSE;
 }
@@ -135,6 +139,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_SATURATION, OnReleasedcaptureSliderSaturation)
 	ON_BN_CLICKED(IDC_BTN_LOCALPIC, OnBtnLocalpic)
 	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
+	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -204,6 +209,11 @@ void CMainPage::PostNcDestroy()
 		m_dlgPlayList.SendMessage(WM_CLOSE, NULL, NULL);
 	}
 
+	if (m_bLoginFlag)
+	{
+		CU_NET_LIB::RequestLogout(g_dwServerId);
+	}
+
 	if(m_bClientStartUp == TRUE)
 	{
 		CU_NET_LIB::ClientCleanUp(g_dwServerId);
@@ -213,13 +223,18 @@ void CMainPage::PostNcDestroy()
 	{
 		CU_NET_LIB::DeleteLibInstance(g_dwServerId);
 	}
+
+	if (g_InitPlaySDK)
+	{
+		DestroyPlaySDKObject();
+	}
 	CDialog::PostNcDestroy();
 	delete this;
 }
 
 BOOL CMainPage::InitSDK()
 {
-	if (!CreatePlaySDKObject())
+	if (!(g_InitPlaySDK = CreatePlaySDKObject()))
 	{
 		MessageBox(_T("初始化解码库失败！"));
 		return FALSE;
@@ -1361,10 +1376,10 @@ void CMainPage::OnBtnLocalpic()
 		//---------------------------------------
 		// 显示图片
 		//---------------------------------------
-		Sleep(300);
-		CDlgPicView dlg;
-		dlg.SetFilePath((const char *)bstrFile);
-		dlg.DoModal();
+		char *pPath = new char[1024];
+		memset(pPath, 0x00, 1024);
+		memcpy(pPath, LPCTSTR(bstrFile), strlen((LPCTSTR)bstrFile));
+		PostMessage(WM_SHOWCAPTUREPIC, WPARAM(pPath), NULL);
 	}
 }
 
@@ -1374,7 +1389,7 @@ void CMainPage::OnBtnLocalrecord()
 	if (m_bRecord == FALSE)
 	{
 		DoRecord();
-		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("停止"));
+		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("停止本地录像"));
 		m_bRecord = TRUE;
 	}
 	else
@@ -1579,4 +1594,13 @@ BOOL CMainPage::CreateRecordFile()
 		return FALSE;
 	}
 	return TRUE;
+}
+
+void CMainPage::OnShowCapturePic(WPARAM wParam, LPARAM lParam)
+{
+	char *pPath = (char *)wParam;
+	CDlgPicView dlg;
+	dlg.SetFilePath(pPath);
+	dlg.DoModal();
+	delete []pPath;
 }
