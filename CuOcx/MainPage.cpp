@@ -1618,7 +1618,82 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 	
 	// TODO: Add your message handler code here
-	
+	if (cx < 600 || cy < 450)
+	{
+		return;
+	}
+	//一种简单的控件onsize的方法
+
+	//请参照资源IDD_PROPPAGE_MAIN
+
+	int i = 0;
+	int iCnt = 0;
+	int iOffset = 0;
+	int iPix = 17;
+	CRect rc;
+	//与右边框距离恒为7像素的控件
+	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_REPLAY,
+						IDC_BTN_REMOTE_PIC};
+	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CWnd *pWnd = GetDlgItem(ui_7pixToRight[i]);
+		if (pWnd && pWnd->GetSafeHwnd())
+		{
+			pWnd->GetWindowRect(&rc);
+			ScreenToClient(&rc);
+			iOffset = cx - iPix - rc.right;
+			rc.OffsetRect(iOffset, 0);
+			pWnd->MoveWindow(rc);
+		}
+	}
+
+
+	//与右边框距离恒为100像素的控件
+	iPix = 105;
+	UINT ui_100pixToRight[] = {IDC_BTN_CLOSE_VIDEO, IDC_BTN_OPENVOICE, IDC_BTN_LOCALRECORD};
+	iCnt = sizeof(ui_100pixToRight) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CWnd *pWnd = GetDlgItem(ui_100pixToRight[i]);
+		if (pWnd && pWnd->GetSafeHwnd())
+		{
+			pWnd->GetWindowRect(&rc);
+			ScreenToClient(&rc);
+			iOffset = cx - iPix - rc.right;
+			rc.OffsetRect(iOffset, 0);
+			pWnd->MoveWindow(rc);
+		}
+	}
+
+
+	//与右边框距离恒为187像素的控件
+	iPix = 195;
+	UINT ui_187pixToRight[] = {IDC_BTN_OPEN_VIDEO, IDC_BTN_OPENSOUND, IDC_BTN_LOCALPIC};
+	iCnt = sizeof(ui_187pixToRight) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CWnd *pWnd = GetDlgItem(ui_187pixToRight[i]);
+		if (pWnd && pWnd->GetSafeHwnd())
+		{
+			pWnd->GetWindowRect(&rc);
+			ScreenToClient(&rc);
+			iOffset = cx - iPix - rc.right;
+			rc.OffsetRect(iOffset, 0);
+			pWnd->MoveWindow(rc);
+		}
+	}
+
+	iOffset = cx - 293;
+	CWnd *pWnd = GetDlgItem(IDC_STATIC_PREVIEW);
+	if (pWnd && pWnd->GetSafeHwnd())
+	{
+		pWnd->GetWindowRect(&rc);
+		ScreenToClient(&rc);
+		rc.right = iOffset;
+		rc.bottom = cy - 27;
+		pWnd->MoveWindow(rc);
+	}
 }
 
 void CMainPage::InVisibleCtrls()
