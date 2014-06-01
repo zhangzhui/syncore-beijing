@@ -1415,7 +1415,7 @@ void CMainPage::DoRecord()
 	CString strDir = _T("");
 	char  szFilePath[1024] = {0};
 	CU_NET_LIB::GUINFO guInfo;
-	guInfo = m_DevInfo.guInfo;
+	guInfo = m_GuInfo;
 	m_bSwitchFile = FALSE;
 	
 	if (!m_strWorkDir.IsEmpty())
