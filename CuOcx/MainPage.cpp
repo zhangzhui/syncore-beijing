@@ -140,6 +140,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_LOCALPIC, OnBtnLocalpic)
 	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
 	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
+	ON_WM_SIZE()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -151,6 +152,8 @@ BOOL CMainPage::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
+	InVisibleCtrls();
+
 	if (InitSDK())
 	{
 		g_dwAudioInstance = player_createPlayInstance(TP_PLAY_SDK,
@@ -1605,4 +1608,30 @@ void CMainPage::OnShowCapturePic(WPARAM wParam, LPARAM lParam)
 	dlg.SetFilePath(pPath);
 	dlg.DoModal();
 	delete []pPath;
+}
+
+void CMainPage::OnSize(UINT nType, int cx, int cy) 
+{
+	CDialog::OnSize(nType, cx, cy);
+	
+	// TODO: Add your message handler code here
+	
+}
+
+void CMainPage::InVisibleCtrls()
+{
+	UINT uiCtrlsID[] = {IDC_BTN_UP, IDC_BTN_DOWN, IDC_BTN_LEFT,
+					IDC_BTN_RIGHT, IDC_BTN_AUTO, IDC_BUTTON_LENS1,
+					IDC_BUTTON_LENS2, IDC_BUTTON_FOCUS1, IDC_BUTTON_FOCUS2,
+					IDC_BUTTON_ZOOM1, IDC_BUTTON_ZOOM2, IDC_SLIDER_BRIGHT,
+					IDC_SLIDER_CONTRAST, IDC_SLIDER_HUE, IDC_SLIDER_SATURATION,
+					IDC_STATIC_OPARATION, IDC_STATIC_LENS, IDC_STATIC_FOCUS,
+					IDC_STATIC_ZOOM, IDC_STATIC_BRIGHT, IDC_STATIC_CONTRAST,
+					IDC_STATIC_HUE, IDC_STATIC_SATURATION};
+
+	int iCnt = sizeof(uiCtrlsID) / sizeof(UINT);
+	for (int i = 0; i < iCnt; i++)
+	{
+		GetDlgItem(uiCtrlsID[i])->ShowWindow(SW_HIDE);
+	}
 }

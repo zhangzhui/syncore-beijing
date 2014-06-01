@@ -74,6 +74,8 @@ protected:
 	void CloseRecordFile();
 
 	static UINT Thread_Status(LPVOID lParam);
+
+	void InVisibleCtrls();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
@@ -105,6 +107,7 @@ protected:
 	afx_msg void OnBtnLocalpic();
 	afx_msg void OnBtnLocalrecord();
 	afx_msg void OnShowCapturePic(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

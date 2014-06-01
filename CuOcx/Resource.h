@@ -31,6 +31,14 @@
 #define IDC_BTN_REMOTE_PIC              215
 #define IDC_BTN_LOCALPIC                216
 #define IDC_BTN_LOCALRECORD             217
+#define IDC_STATIC_OPARATION            218
+#define IDC_STATIC_LENS                 219
+#define IDC_STATIC_FOCUS                220
+#define IDC_STATIC_ZOOM                 221
+#define IDC_STATIC_BRIGHT               222
+#define IDC_STATIC_CONTRAST             223
+#define IDC_STATIC_HUE                  224
+#define IDC_STATIC_SATURATION           225
 #define IDC_BUTTON_STOP                 1008
 #define IDC_BUTTON_LENS1                1017
 #define IDC_BUTTON_LENS2                1018
@@ -84,7 +92,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        202
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         218
+#define _APS_NEXT_CONTROL_VALUE         226
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
