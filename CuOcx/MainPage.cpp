@@ -687,6 +687,16 @@ void CMainPage::OnBtnCloseVideo()
 		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPENSOUND, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPENSOUND)->GetSafeHwnd());
 	}
 
+	if (m_bRecord)
+	{
+		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_LOCALRECORD, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_LOCALRECORD)->GetSafeHwnd());
+	}
+
+	if (m_bVoice)
+	{
+		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPENVOICE, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPENVOICE)->GetSafeHwnd());
+	}
+
 	StopStream();
 	DestroyPlayInstance();
 
@@ -720,6 +730,11 @@ void CMainPage::OnBtnOpensound()
 
 void CMainPage::OnBtnOpenvoice()
 {
+	if(!m_bStreamOpenFlag || m_play_id == 0)
+	{
+		return;
+	}
+
 	if (!m_bLoginFlag)
 	{
 		return;
@@ -1391,6 +1406,11 @@ void CMainPage::OnBtnLocalpic()
 void CMainPage::OnBtnLocalrecord() 
 {
 	// TODO: Add your control notification handler code here
+	if(!m_bStreamOpenFlag || m_play_id == 0)
+	{
+		return;
+	}
+
 	if (m_bRecord == FALSE)
 	{
 		DoRecord();
