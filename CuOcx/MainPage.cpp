@@ -1604,10 +1604,13 @@ BOOL CMainPage::CreateRecordFile()
 void CMainPage::OnShowCapturePic(WPARAM wParam, LPARAM lParam)
 {
 	char *pPath = (char *)wParam;
-	CDlgPicView dlg;
-	dlg.SetFilePath(pPath);
-	dlg.DoModal();
+	CString strPath;
+	strPath.Format(_T("%s"), pPath);
 	delete []pPath;
+
+	CDlgPicView dlg;
+	dlg.SetFilePath(strPath);
+	dlg.DoModal();
 }
 
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
