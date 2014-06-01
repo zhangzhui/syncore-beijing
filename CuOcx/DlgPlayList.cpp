@@ -626,6 +626,11 @@ void CDlgPlayList::ResetFileName(int iType, LPCTSTR lpszPathName, CString &strFi
 		return;
 	
 	strFileName = str.Right(iLen);
+	if (strFileName.Right(3).Compare(_T("dat")) == 0)
+	{
+		strFileName.Delete(strFileName.GetLength() - 3, 3);
+		strFileName += _T("avi");
+	}
 }
 
 

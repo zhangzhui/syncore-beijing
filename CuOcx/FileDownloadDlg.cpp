@@ -117,7 +117,7 @@ BOOL CFileDownloadDlg::OnInitDialog()
 		//sprintf(szServerIp, (LPSTR)(LPCSTR)theApp.m_szServerIP);
         
 		CDlgPlayList* pPlayList = (CDlgPlayList*)GetParent();
-		CMainPage* pSDKDlg = (CMainPage*)pPlayList->GetParent();
+		CMainPage* pSDKDlg = (CMainPage*)pPlayList->GetMainPage();
 		sprintf(szServerIp,(LPSTR)(LPCSTR)pSDKDlg->m_strServerIPAddr.GetBuffer(pSDKDlg->m_strServerIPAddr.GetLength()));
 		pPlayList->ParseDomain(szServerIp);
 
