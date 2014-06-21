@@ -39,6 +39,7 @@
 #define IDC_STATIC_CONTRAST             223
 #define IDC_STATIC_HUE                  224
 #define IDC_STATIC_SATURATION           225
+#define IDC_BTN_LOCALSOUNDRECORD        226
 #define IDC_BUTTON_STOP                 1008
 #define IDC_BUTTON_LENS1                1017
 #define IDC_BUTTON_LENS2                1018
@@ -92,7 +93,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        202
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         226
+#define _APS_NEXT_CONTROL_VALUE         227
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

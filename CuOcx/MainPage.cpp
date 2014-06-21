@@ -22,31 +22,63 @@ long CALLBACK dec_callback( long hHandle, dec_data_t* dec_data, DWORD dwUser)
 
 void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecoderID )
 {
+	if (lpBuf == NULL)
+	{
+		return;
+	}
+
+	frame_head_t *pHead = (frame_head_t *)lpBuf;//获得帧头
+
 	CMainPage* pDlg = (CMainPage*)lHandle;
 	if (pDlg == NULL)
 		return;	
 	if( pDlg->m_play_id != 0)
 	{
-		frame_head_t *pHead = (frame_head_t *)lpBuf;
+// 		frame_head_t *pHead = (frame_head_t *)lpBuf;
 		player_inputNetFrame(pDlg->m_play_id, (char *)lpBuf, lSize);
 // 		TRACE(_T("~~~~~~~~~~~~~~~~~~~lSize = %d------lDecoderID=%d\n"), lSize, lDecoderID);
 		pDlg->m_nCountTest = pHead->frame_no;
 	}
-	//记录到文件
-	if(!pDlg->m_bRecord)
-		return;
-	
-	if (pDlg->m_bSwitchFile)
+
+
+
+	if (pHead->frame_type != A_FRAME_TYPE)
 	{
-		frame_head_t *pHead = (frame_head_t *)lpBuf;
-		if (pHead->frame_type == I_FRAME_TYPE)
-			pDlg->CreateRecordFile();
-	}	
-	if (pDlg->m_file != NULL)
-		fwrite((PBYTE)lpBuf + sizeof(frame_head_t), lSize - sizeof(frame_head_t), 1, pDlg->m_file);
-	
-	if (pDlg->m_hFileRec != NULL)
-		AVI_fwrite(pDlg->m_hFileRec, lpBuf);
+		//只保存录像
+		//A_FRAME_TYPE为声音
+		if(!pDlg->m_bRecord)
+			return;
+		
+		if (pDlg->m_bSwitchRecordFile)
+		{
+// 			frame_head_t *pHead = (frame_head_t *)lpBuf;
+			if (pHead->frame_type == I_FRAME_TYPE)
+				pDlg->CreateRecordFile();
+		}	
+		if (pDlg->m_Recordfile != NULL)
+			fwrite((PBYTE)lpBuf + sizeof(frame_head_t), lSize - sizeof(frame_head_t), 1, pDlg->m_Recordfile);
+		
+		if (pDlg->m_hRecordFileRec != NULL)
+			AVI_fwrite(pDlg->m_hRecordFileRec, lpBuf);
+	}
+	else
+	{
+		//保存声音文件
+		if(!pDlg->m_bSoundRecord)
+			return;
+		
+		if (pDlg->m_bSwitchSoundFile)
+		{
+// 			frame_head_t *pHead = (frame_head_t *)lpBuf;
+			if (pHead->frame_type == I_FRAME_TYPE)
+				pDlg->CreateRecordFile();
+		}	
+		if (pDlg->m_SoundFile != NULL)
+			fwrite((PBYTE)lpBuf + sizeof(frame_head_t), lSize - sizeof(frame_head_t), 1, pDlg->m_SoundFile);
+		
+		if (pDlg->m_hSoundFileRec != NULL)
+			AVI_fwrite(pDlg->m_hSoundFileRec, lpBuf);
+	}
 }
 
 void RecAudioDataFunc(long lHandle, void* lpBuf, long lSize, long lDecoderID)
@@ -80,9 +112,11 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 
 	m_pVideoIns = NULL;
 
-	m_hFileRec = NULL;
-	m_file = NULL;
+	m_hRecordFileRec = NULL;
+	m_Recordfile = NULL;
 	m_bRecord = FALSE;//刚开始是没有开始录像的
+	m_SoundFile = NULL;
+	m_bSoundRecord = FALSE;//刚开始是没有录音的
 
 	m_bStreamOpenFlag = FALSE;
 	m_play_id = 0;
@@ -141,6 +175,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
 	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -690,6 +725,11 @@ void CMainPage::OnBtnCloseVideo()
 	if (m_bRecord)
 	{
 		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_LOCALRECORD, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_LOCALRECORD)->GetSafeHwnd());
+	}
+
+	if (m_bSoundRecord)
+	{
+		SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_LOCALSOUNDRECORD, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_LOCALSOUNDRECORD)->GetSafeHwnd());
 	}
 
 	if (m_bVoice)
@@ -1436,7 +1476,7 @@ void CMainPage::DoRecord()
 	char  szFilePath[1024] = {0};
 	CU_NET_LIB::GUINFO guInfo;
 	guInfo = m_GuInfo;
-	m_bSwitchFile = FALSE;
+	m_bSwitchRecordFile = FALSE;
 	
 	if (!m_strWorkDir.IsEmpty())
 	{
@@ -1467,36 +1507,36 @@ void CMainPage::DoRecord()
 		
 		if (m_lManufactType == HK8016_PLAY_SDK)
 		{
-			m_file = fopen(szFilePath, _T("wb"));
-			if(!m_file)
+			m_Recordfile = fopen(szFilePath, _T("wb"));
+			if(!m_Recordfile)
 				return;
 			
-			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_Recordfile) < 0)
 			{
-				fclose((FILE*)m_file);
-				m_file = NULL;
+				fclose((FILE*)m_Recordfile);
+				m_Recordfile = NULL;
 				return;
 			}
 		}
 		else if (m_lManufactType == HK8116_PLAY_SDK)
 		{
-			m_file = fopen(szFilePath, _T("wb"));
-			if(!m_file)
+			m_Recordfile = fopen(szFilePath, _T("wb"));
+			if(!m_Recordfile)
 				return;
 			
-			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_Recordfile) < 0)
 			{
-				fclose((FILE*)m_file);
-				m_file = NULL;
+				fclose((FILE*)m_Recordfile);
+				m_Recordfile = NULL;
 				return;
 			}
 		}
 		else
 		{
-			m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
-			if(m_hFileRec == NULL)
+			m_hRecordFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+			if(m_hRecordFileRec == NULL)
 			{
-				m_hFileRec = NULL;
+				m_hRecordFileRec = NULL;
 				strMsg.Format(_T("创建录象文件失败！\nErrCode:%d"), ::GetLastError());
 				AfxMessageBox(strMsg);
 				return;
@@ -1506,7 +1546,7 @@ void CMainPage::DoRecord()
 	}
 	catch(...)
 	{
-		m_hFileRec = NULL;
+		m_hRecordFileRec = NULL;
 		AfxMessageBox(_T("创建录象文件失败！"));
 		return;
 	}
@@ -1528,18 +1568,18 @@ CString CMainPage::GetRecFileExt(long lCompanyCode)
 
 void CMainPage::CloseRecordFile()
 {
-	m_bSwitchFile = FALSE;
+	m_bSwitchRecordFile = FALSE;
 	Sleep(200);
 
-	if(m_hFileRec != NULL)
+	if(m_hRecordFileRec != NULL)
 	{ 
-		AVI_fclose(m_hFileRec);
-		m_hFileRec = NULL;
+		AVI_fclose(m_hRecordFileRec);
+		m_hRecordFileRec = NULL;
 	}
-	if (m_file != NULL)
+	if (m_Recordfile != NULL)
 	{
-		fclose((FILE*)m_file);
-		m_file = NULL;
+		fclose((FILE*)m_Recordfile);
+		m_Recordfile = NULL;
 	}
 }
 
@@ -1567,45 +1607,45 @@ BOOL CMainPage::CreateRecordFile()
 			MakeDir(szFilePath);
 		
 		sprintf(szFilePath, "%s", strFile);
-		m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
-		if(m_hFileRec == NULL)
+		m_hRecordFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+		if(m_hRecordFileRec == NULL)
 		{
-			m_hFileRec = NULL;
+			m_hRecordFileRec = NULL;
 			return FALSE;
 		}
 		
 		if (m_lManufactType == HK8016_PLAY_SDK)
 		{
-			m_file = fopen(szFilePath, "wb");
-			if(!m_file)
+			m_Recordfile = fopen(szFilePath, "wb");
+			if(!m_Recordfile)
 				return FALSE;
 			
-			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_Recordfile) < 0)
 			{
-				fclose((FILE*)m_file);
-				m_file = NULL;
+				fclose((FILE*)m_Recordfile);
+				m_Recordfile = NULL;
 				return FALSE;
 			}
 		}
 		else if (m_lManufactType == HK8116_PLAY_SDK)
 		{
-			m_file = fopen(szFilePath, "wb");
-			if(!m_file)
+			m_Recordfile = fopen(szFilePath, "wb");
+			if(!m_Recordfile)
 				return FALSE;
 			
-			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_file) < 0)
+			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_Recordfile) < 0)
 			{
-				fclose((FILE*)m_file);
-				m_file = NULL;
+				fclose((FILE*)m_Recordfile);
+				m_Recordfile = NULL;
 				return FALSE;
 			}
 		}
 		else
 		{
-			m_hFileRec = AVI_fopen(szFilePath, AVI_WRITE);
-			if(m_hFileRec == NULL)
+			m_hRecordFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+			if(m_hRecordFileRec == NULL)
 			{
-				m_hFileRec = NULL;
+				m_hRecordFileRec = NULL;
 				strMsg.Format("创建录象文件失败! ErrCode:%d\n", ::GetLastError());
 				TRACE("CVideoButton::CreateRecordFile() --- %s\n", strMsg);
 				return FALSE;
@@ -1615,7 +1655,7 @@ BOOL CMainPage::CreateRecordFile()
 	}
 	catch(...)
 	{
-		m_hFileRec = NULL;
+		m_hRecordFileRec = NULL;
 		return FALSE;
 	}
 	return TRUE;
@@ -1653,7 +1693,7 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	CRect rc;
 	//与右边框距离恒为7像素的控件
 	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_REPLAY,
-						IDC_BTN_REMOTE_PIC};
+						IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALSOUNDRECORD};
 	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
 	for (i = 0; i < iCnt; i++)
 	{
@@ -1731,5 +1771,133 @@ void CMainPage::InVisibleCtrls()
 	for (int i = 0; i < iCnt; i++)
 	{
 		GetDlgItem(uiCtrlsID[i])->ShowWindow(SW_HIDE);
+	}
+}
+
+void CMainPage::OnBtnLocalsoundrecord() 
+{
+	// TODO: Add your control notification handler code here
+	if(!m_bStreamOpenFlag || m_play_id == 0)
+	{
+		return;
+	}
+	
+	if (m_bSoundRecord == FALSE)
+	{
+		DoSoundRecord();
+		GetDlgItem(IDC_BTN_LOCALSOUNDRECORD)->SetWindowText(_T("停止本地录音"));
+		m_bSoundRecord = TRUE;
+	}
+	else
+	{
+		m_bSoundRecord = FALSE;
+		Sleep(20);
+		CloseSoundRecordFile();
+		GetDlgItem(IDC_BTN_LOCALSOUNDRECORD)->SetWindowText(_T("本地录音"));
+	}
+}
+
+void CMainPage::DoSoundRecord()
+{
+	CString strLoadText,strLoadText1;
+	// 根据设定路径和其他要素创建录音文件
+	CString strPath = _T("");
+	CString strFile = _T("");
+	CString strDir = _T("");
+	char  szFilePath[1024] = {0};
+	CU_NET_LIB::GUINFO guInfo;
+	guInfo = m_GuInfo;
+	m_bSwitchSoundFile = FALSE;
+	
+	if (!m_strWorkDir.IsEmpty())
+	{
+		strDir = m_strWorkDir;
+	}
+	else
+	{
+		strDir = _T(".");
+	}
+	SYSTEMTIME systime;
+	::GetLocalTime(&systime);
+	strPath.Format("%s\\%s\\SoundRecord\\%04d%02d%02d\\", strDir, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+	strFile.Format("%s%02d_%02d_%02d%s", strPath, systime.wHour,systime.wMinute,systime.wSecond,
+		(LPCTSTR)GetRecFileExt(guInfo.lManufactType));
+	
+	sprintf(szFilePath, "%s", (LPCTSTR)strPath);
+	
+	CString strMsg = _T("");
+	try
+	{
+		int nPos = -1;
+		int nStart = 0;
+		
+		if(_access(szFilePath,0)!=0)   
+			MakeDir(szFilePath);
+		
+		sprintf(szFilePath, "%s", strFile);
+		
+		if (m_lManufactType == HK8016_PLAY_SDK)
+		{
+			m_SoundFile = fopen(szFilePath, _T("wb"));
+			if(!m_SoundFile)
+				return;
+			
+			if (fwrite(&g_HK8016_HeadBuf, 40, 1, (FILE*)m_SoundFile) < 0)
+			{
+				fclose((FILE*)m_SoundFile);
+				m_SoundFile = NULL;
+				return;
+			}
+		}
+		else if (m_lManufactType == HK8116_PLAY_SDK)
+		{
+			m_SoundFile = fopen(szFilePath, _T("wb"));
+			if(!m_Recordfile)
+				return;
+			
+			if (fwrite(&g_HK8116_HeadBuf, 40, 1, (FILE*)m_SoundFile) < 0)
+			{
+				fclose((FILE*)m_SoundFile);
+				m_SoundFile = NULL;
+				return;
+			}
+		}
+		else
+		{
+			m_hSoundFileRec = AVI_fopen(szFilePath, AVI_WRITE);
+			if(m_hSoundFileRec == NULL)
+			{
+				m_hSoundFileRec = NULL;
+				strMsg.Format(_T("创建录音文件失败！\nErrCode:%d"), ::GetLastError());
+				AfxMessageBox(strMsg);
+				return;
+			}
+			
+		}
+	}
+	catch(...)
+	{
+		m_hSoundFileRec = NULL;
+		AfxMessageBox(_T("创建录音文件失败！"));
+		return;
+	}
+	TRACE("Command: Start Sound Record!!!!\n");
+	m_bSoundRecord = !m_bSoundRecord;//切换录音状态
+}
+
+void CMainPage::CloseSoundRecordFile()
+{
+	m_bSwitchSoundFile = FALSE;
+	Sleep(200);
+	
+	if(m_hSoundFileRec != NULL)
+	{ 
+		AVI_fclose(m_hSoundFileRec);
+		m_hSoundFileRec = NULL;
+	}
+	if (m_SoundFile != NULL)
+	{
+		fclose((FILE*)m_SoundFile);
+		m_SoundFile = NULL;
 	}
 }

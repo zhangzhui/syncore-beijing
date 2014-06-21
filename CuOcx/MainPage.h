@@ -69,9 +69,11 @@ protected:
 	void  WaitForThreadStatus();
 	void ProcessCameraDirection();
 	void SetVideoParam();
-	void DoRecord();
+	void DoRecord();//录像
+	void CloseRecordFile();//关闭录像文件
+	void DoSoundRecord();//录音
+	void CloseSoundRecordFile();//关闭录音文件
 	CString GetRecFileExt(long lCompanyCode);
-	void CloseRecordFile();
 
 	static UINT Thread_Status(LPVOID lParam);
 
@@ -108,6 +110,7 @@ protected:
 	afx_msg void OnBtnLocalrecord();
 	afx_msg void OnShowCapturePic(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnBtnLocalsoundrecord();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -150,9 +153,14 @@ public:
 	CCameraControlThread m_CameraCtrl;
 
 	BOOL m_bRecord;//记录有没有在录像
-	BOOL m_bSwitchFile;
-	FILE* m_file;
-	AVI_FILE m_hFileRec;
+	BOOL m_bSwitchRecordFile;//切换录像文件，用在关闭录音的时候
+	FILE *m_Recordfile;//录像文件
+	AVI_FILE m_hRecordFileRec;
+
+	BOOL m_bSoundRecord;//记录有没有在录音
+	BOOL m_bSwitchSoundFile;//切换录音文件，用在关闭录音的时候
+	FILE *m_SoundFile;//录音文件
+	AVI_FILE m_hSoundFileRec;
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
