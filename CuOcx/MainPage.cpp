@@ -199,6 +199,14 @@ BOOL CMainPage::OnInitDialog()
 	}
 	GetDlgItem(IDC_EDIT_DEVICE)->SetWindowText(m_strCameraID);
 
+	CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
+	if (pList && pList->GetSafeHwnd())
+	{
+		pList->SetExtendedStyle(LVS_EX_FULLROWSELECT);
+		pList->InsertColumn(0, "时间", LVCFMT_LEFT, 70);
+		pList->InsertColumn(1, "操作", LVCFMT_LEFT, 180);
+	}
+
 	return FALSE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -486,6 +494,8 @@ void CMainPage::OnBtnOpenVideo()
 		StartStream(*m_pDeviceNode);
 		m_bOpenVideo = TRUE;
 		GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(FALSE);
+		CString str("打开视频");
+		TextOutOperation(str);
 	}
 }
 
@@ -696,16 +706,18 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 			BOOL bRet = pDlg->m_pVideoIns->Reconnect();
 			if(bRet)
 			{
-				strLoadText="正在重新请求视频";
+				strLoadText="[系统消息]正在重新请求视频";
                 sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));	
 			}
 			else
 			{
-				strLoadText="等待重新连接";
+				strLoadText="[系统消息]等待重新连接";
                 sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));	
 			}
             TRACE(_T("-----------m_pVideoIns->Reconnect=-------%s\n"), szStatus);
 			nWaitTime = 3000;
+
+			pDlg->TextOutOperation(strLoadText);
 		}
 		pDlg->m_strNotiy.Format(_T("%s"), szText);
 		if(WAIT_OBJECT_0 == ::WaitForSingleObject(pDlg->m_hEventQuit, nWaitTime))
@@ -743,7 +755,8 @@ void CMainPage::OnBtnCloseVideo()
 	m_bOpenVideo = FALSE;
 	GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BTN_CLOSE_VIDEO)->EnableWindow(FALSE);
-
+	CString str("关闭视频");
+	TextOutOperation(str);
 }
 
 void CMainPage::OnBtnOpensound() 
@@ -760,11 +773,15 @@ void CMainPage::OnBtnOpensound()
 	{
 		player_openSound(m_play_id);
 		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("关闭声音"));
+		CString str("打开声音操作成功");
+		TextOutOperation(str);
 	}
 	else
 	{
 		player_closeSound(m_play_id);
 		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("打开声音"));
+		CString str("关闭声音操作成功");
+		TextOutOperation(str);
 	}
 }
 
@@ -791,6 +808,8 @@ void CMainPage::OnBtnOpenvoice()
 		if ( this->m_bVoice == TRUE)
 		{
 			GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("停止语音对讲"));
+			CString str("开始语音对讲");
+			TextOutOperation(str);
 		}
 	}
 	else
@@ -798,6 +817,8 @@ void CMainPage::OnBtnOpenvoice()
 		StopChart();
 		this->m_bVoice = FALSE;
 		GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("开启语音对讲"));
+		CString str("停止语音对讲");
+		TextOutOperation(str);
 		
 	}
 }
@@ -1264,6 +1285,8 @@ void CMainPage::OnBtnRemotePic()
 	HRESULT hr = CU_NET_LIB::RemoteCapturePic(g_dwServerId, guInfo);
 	if(ST_OK == hr)
 	{
+		CString str("远端拍照操作成功");
+		TextOutOperation(str);
 		AfxMessageBox("操作成功!",MB_OK | MB_ICONINFORMATION);
 	}
 	else
@@ -1432,7 +1455,8 @@ void CMainPage::OnBtnLocalpic()
 			return;
 		}
 		
-		
+		CString str("本地拍照操作成功");
+		TextOutOperation(str);
 		//---------------------------------------
 		// 显示图片
 		//---------------------------------------
@@ -1456,6 +1480,8 @@ void CMainPage::OnBtnLocalrecord()
 		DoRecord();
 		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("停止本地录像"));
 		m_bRecord = TRUE;
+		CString str("开始本地录像");
+		TextOutOperation(str);
 	}
 	else
 	{
@@ -1463,6 +1489,8 @@ void CMainPage::OnBtnLocalrecord()
 		Sleep(20);
 		CloseRecordFile();
 		GetDlgItem(IDC_BTN_LOCALRECORD)->SetWindowText(_T("本地录像"));
+		CString str("停止本地录像");
+		TextOutOperation(str);
 	}
 }
 
@@ -1693,7 +1721,7 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	CRect rc;
 	//与右边框距离恒为7像素的控件
 	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_REPLAY,
-						IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALSOUNDRECORD};
+						IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALSOUNDRECORD, IDC_LIST_OP};
 	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
 	for (i = 0; i < iCnt; i++)
 	{
@@ -1754,6 +1782,17 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 		rc.bottom = cy - 27;
 		pWnd->MoveWindow(rc);
 	}
+
+
+	//操作editbox
+	pWnd = GetDlgItem(IDC_LIST_OP);
+	if (pWnd && pWnd->GetSafeHwnd())
+	{
+		pWnd->GetWindowRect(&rc);
+		ScreenToClient(&rc);
+		rc.bottom = cy - 27;
+		pWnd->MoveWindow(rc);
+	}
 }
 
 void CMainPage::InVisibleCtrls()
@@ -1787,6 +1826,8 @@ void CMainPage::OnBtnLocalsoundrecord()
 		DoSoundRecord();
 		GetDlgItem(IDC_BTN_LOCALSOUNDRECORD)->SetWindowText(_T("停止本地录音"));
 		m_bSoundRecord = TRUE;
+		CString str("开始本地录音");
+		TextOutOperation(str);
 	}
 	else
 	{
@@ -1794,6 +1835,8 @@ void CMainPage::OnBtnLocalsoundrecord()
 		Sleep(20);
 		CloseSoundRecordFile();
 		GetDlgItem(IDC_BTN_LOCALSOUNDRECORD)->SetWindowText(_T("本地录音"));
+		CString str("停止本地录音");
+		TextOutOperation(str);
 	}
 }
 
@@ -1899,5 +1942,21 @@ void CMainPage::CloseSoundRecordFile()
 	{
 		fclose((FILE*)m_SoundFile);
 		m_SoundFile = NULL;
+	}
+}
+
+void CMainPage::TextOutOperation(CString &str)
+{
+	CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
+	if (pList && pList->GetSafeHwnd())
+	{
+		CTime t = CTime::GetCurrentTime();
+		int iIndex = pList->InsertItem(pList->GetItemCount(), (LPCTSTR)t.Format(_T("%H:%M:%S")));
+		pList->SetItemText(iIndex, 1, (LPCTSTR)str);
+
+		if (pList->GetItemCount() > 0)
+		{
+			pList->EnsureVisible(pList->GetItemCount() - 1, FALSE);
+		}
 	}
 }

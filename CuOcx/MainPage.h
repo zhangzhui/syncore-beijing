@@ -33,6 +33,7 @@ public:
 	BOOL MakeDir(char* filePath);
 
 	BOOL CreateRecordFile();
+	void TextOutOperation(CString &str);
 
 // Dialog Data
 	//{{AFX_DATA(CMainPage)
