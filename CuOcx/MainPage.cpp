@@ -40,9 +40,29 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 		pDlg->m_nCountTest = pHead->frame_no;
 	}
 
+#ifdef _DEBUG
+	switch(pHead->frame_type)
+	{
+	case A_FRAME_TYPE:
+		TRACE("A_FRAME_TYPE...\n");
+		break;
+	case I_FRAME_TYPE:
+		TRACE("I_FRAME_TYPE...\n");
+		break;
+	case P_FRAME_TYPE:
+		TRACE("P_FRAME_TYPE...\n");
+		break;
+	case OSD_FRAME_TYPE:
+		TRACE("OSD_FRAME_TYPE...\n");
+		break;
+	default:
+		TRACE("TYPE:%d...\n", pHead->frame_type);
+		break;
+	}
+#endif
 
 
-	if (pHead->frame_type != A_FRAME_TYPE)
+	if (pDlg->m_bRecord && pHead->frame_type != A_FRAME_TYPE)
 	{
 		//只保存录像
 		//A_FRAME_TYPE为声音
@@ -61,7 +81,7 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 		if (pDlg->m_hRecordFileRec != NULL)
 			AVI_fwrite(pDlg->m_hRecordFileRec, lpBuf);
 	}
-	else
+	else if (pDlg->m_bSoundRecord && pHead->frame_type != P_FRAME_TYPE)
 	{
 		//保存声音文件
 		if(!pDlg->m_bSoundRecord)
@@ -1915,7 +1935,6 @@ void CMainPage::DoSoundRecord()
 				AfxMessageBox(strMsg);
 				return;
 			}
-			
 		}
 	}
 	catch(...)
