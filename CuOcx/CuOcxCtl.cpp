@@ -40,6 +40,7 @@ BEGIN_DISPATCH_MAP(CCuOcxCtrl, COleControl)
 	DISP_FUNCTION(CCuOcxCtrl, "SetWorkDir", SetWorkDir, VT_EMPTY, VTS_BSTR)
 	DISP_FUNCTION(CCuOcxCtrl, "SetCameraID", SetCameraID, VT_EMPTY, VTS_BSTR)
 	DISP_FUNCTION(CCuOcxCtrl, "Init", Init, VT_EMPTY, VTS_NONE)
+	DISP_FUNCTION(CCuOcxCtrl, "SetDisplayMode", SetDisplayMode, VT_EMPTY, VTS_I4)
 	//}}AFX_DISPATCH_MAP
 	DISP_FUNCTION_ID(CCuOcxCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 END_DISPATCH_MAP()
@@ -279,4 +280,10 @@ void CCuOcxCtrl::OnSize(UINT nType, int cx, int cy)
 	{
 		m_pMainPage->MoveWindow(0, 0, cx, cy, TRUE);
 	}
+}
+
+void CCuOcxCtrl::SetDisplayMode(long lDisplayMode) 
+{
+	// TODO: Add your dispatch handler code here
+	m_nDisplayMode = lDisplayMode;
 }

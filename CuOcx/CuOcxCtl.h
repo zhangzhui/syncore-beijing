@@ -21,6 +21,7 @@ private:
 	long m_nServerPort;
 	CString m_strWorkDir;
 	CString m_strCameraID;
+	long m_nDisplayMode;
 
 	CMainPage *m_pMainPage;
 
@@ -61,6 +62,7 @@ protected:
 	afx_msg void SetWorkDir(LPCTSTR strWorkDir);
 	afx_msg void SetCameraID(LPCTSTR strCameraID);
 	afx_msg void Init();
+	afx_msg void SetDisplayMode(long lDisplayMode);
 	//}}AFX_DISPATCH
 	DECLARE_DISPATCH_MAP()
 
@@ -82,6 +84,7 @@ public:
 	dispidSetWorkDir = 5L,
 	dispidSetCameraID = 6L,
 	dispidInit = 7L,
+	dispidSetDisplayMode = 8L,
 	//}}AFX_DISP_ID
 	};
 };
