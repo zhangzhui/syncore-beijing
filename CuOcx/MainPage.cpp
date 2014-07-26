@@ -268,6 +268,11 @@ void CMainPage::SetCameraID(LPCTSTR strCameraID)
 	m_strCameraID = strCameraID;
 }
 
+void CMainPage::SetDisplayMode(long nMode)
+{
+	m_nDisplayMode = nMode;
+}
+
 void CMainPage::PostNcDestroy()
 {
 	// TODO: Add your specialized code here and/or call the base class
@@ -507,6 +512,22 @@ void CMainPage::OnBtnOpenVideo()
 			}
 			iter++;
 		}
+	}
+
+	if (m_nDisplayMode == eMode_OnlyReplayBtn)
+	{
+		UINT uiCtrlsID[] = {IDC_BTN_OPEN_VIDEO, IDC_BTN_CLOSE_VIDEO,
+					IDC_BTN_OPENSOUND, IDC_BTN_OPENVOICE,
+					IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALPIC, IDC_BTN_LOCALRECORD,
+					IDC_BTN_LOCALSOUNDRECORD};
+		
+		int iCnt = sizeof(uiCtrlsID) / sizeof(UINT);
+		for (int i = 0; i < iCnt; i++)
+		{
+			GetDlgItem(uiCtrlsID[i])->EnableWindow(FALSE);
+		}
+
+		return;
 	}
 
 	if (m_pDeviceNode != NULL)

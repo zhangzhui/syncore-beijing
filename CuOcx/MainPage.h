@@ -18,6 +18,12 @@
 #define WM_CUNETLIB (WM_USER + 4)
 #define WM_SHOWCAPTUREPIC (WM_USER + 5)
 
+enum eDISPLAYMODE
+{
+	eMode_Normal,
+	eMode_OnlyReplayBtn,
+};
+
 class CVideoInstance;
 class CMainPage : public CDialog
 {
@@ -30,6 +36,7 @@ public:
 	void SetServerPort(long nPort);
 	void SetWorkDir(LPCTSTR strWorkDir);
 	void SetCameraID(LPCTSTR strCameraID);
+	void SetDisplayMode(long nMode);
 	BOOL MakeDir(char* filePath);
 
 	BOOL CreateRecordFile();
@@ -122,6 +129,7 @@ public:
 	long m_nServerPort;
 	CString m_strWorkDir;
 	CString m_strCameraID;
+	long m_nDisplayMode;
 
 	BOOL m_bClientStartUp;//Æô¶¯¿Í»§¶Ë
 	BOOL m_bLoginFlag;

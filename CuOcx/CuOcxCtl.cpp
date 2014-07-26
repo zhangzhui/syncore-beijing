@@ -139,6 +139,9 @@ CCuOcxCtrl::CCuOcxCtrl()
 
 	// TODO: Initialize your control's instance data here.
 	m_pMainPage = NULL;
+
+	m_nServerPort = 0;
+	m_nDisplayMode = eMode_Normal;
 }
 
 
@@ -257,6 +260,7 @@ void CCuOcxCtrl::Init()
 	m_pMainPage->SetServerPort(m_nServerPort);
 	m_pMainPage->SetWorkDir(m_strWorkDir);
 	m_pMainPage->SetCameraID(m_strCameraID);
+	m_pMainPage->SetDisplayMode(m_nDisplayMode);
 
 	if (m_pMainPage->Create(IDD_PROPPAGE_MAIN, this))
 	{
