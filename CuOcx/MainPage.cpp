@@ -791,16 +791,22 @@ void CMainPage::OnBtnOpensound()
 	
 	if (m_bSoundAllow)
 	{
+		if (m_bVoice)
+		{
+			SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPENVOICE, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPENVOICE)->GetSafeHwnd()); 
+		}
+
+		player_setMute(m_play_id, FALSE);
 		player_openSound(m_play_id);
-		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("关闭声音"));
-		CString str("打开声音操作成功");
+		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("关闭现场声音"));
+		CString str("打开现场声音操作成功");
 		TextOutOperation(str);
 	}
 	else
 	{
 		player_closeSound(m_play_id);
-		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("打开声音"));
-		CString str("关闭声音操作成功");
+		GetDlgItem(IDC_BTN_OPENSOUND)->SetWindowText(_T("打开现场声音"));
+		CString str("关闭现场声音操作成功");
 		TextOutOperation(str);
 	}
 }
@@ -824,20 +830,26 @@ void CMainPage::OnBtnOpenvoice()
 	
 	if ( m_bVoice == FALSE )
 	{
+		if (m_bSoundAllow)
+		{
+			SendMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPENSOUND, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPENSOUND)->GetSafeHwnd()); 
+		}
+		player_setMute(m_play_id, TRUE);
 		m_bVoice = StartVoice();
 		if ( this->m_bVoice == TRUE)
 		{
-			GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("停止语音对讲"));
-			CString str("开始语音对讲");
+			GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("关闭现场喊话"));
+			CString str("开启现场喊话操作成功");
 			TextOutOperation(str);
 		}
 	}
 	else
-	{		
+	{
+		player_setMute(m_play_id, FALSE);
 		StopChart();
 		this->m_bVoice = FALSE;
-		GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("开启语音对讲"));
-		CString str("停止语音对讲");
+		GetDlgItem(IDC_BTN_OPENVOICE)->SetWindowText(_T("开启现场喊话"));
+		CString str("关闭现场喊话操作成功");
 		TextOutOperation(str);
 		
 	}
