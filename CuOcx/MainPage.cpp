@@ -1773,8 +1773,8 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	int iPix = 17;
 	CRect rc;
 	//ÓëÓÒ±ß¿ò¾àÀëºãÎª7ÏñËØµÄ¿Ø¼þ
-	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_REPLAY,
-						IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALSOUNDRECORD, IDC_LIST_OP};
+	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_CLOSE_VIDEO,
+						IDC_BTN_OPENVOICE, IDC_BTN_LOCALPIC, IDC_BTN_LOCALSOUNDRECORD, IDC_LIST_OP};
 	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
 	for (i = 0; i < iCnt; i++)
 	{
@@ -1792,7 +1792,8 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 
 	//ÓëÓÒ±ß¿ò¾àÀëºãÎª100ÏñËØµÄ¿Ø¼þ
 	iPix = 105;
-	UINT ui_100pixToRight[] = {IDC_BTN_CLOSE_VIDEO, IDC_BTN_OPENVOICE, IDC_BTN_LOCALRECORD};
+	UINT ui_100pixToRight[] = {IDC_BTN_OPEN_VIDEO, IDC_BTN_OPENSOUND, IDC_BTN_REMOTE_PIC,
+							IDC_BTN_LOCALRECORD, IDC_BTN_REPLAY};
 	iCnt = sizeof(ui_100pixToRight) / sizeof(UINT);
 	for (i = 0; i < iCnt; i++)
 	{
@@ -1807,7 +1808,7 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 		}
 	}
 
-
+/*
 	//ÓëÓÒ±ß¿ò¾àÀëºãÎª187ÏñËØµÄ¿Ø¼þ
 	iPix = 195;
 	UINT ui_187pixToRight[] = {IDC_BTN_OPEN_VIDEO, IDC_BTN_OPENSOUND, IDC_BTN_LOCALPIC};
@@ -1824,8 +1825,8 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 			pWnd->MoveWindow(rc);
 		}
 	}
-
-	iOffset = cx - 293;
+*/
+	iOffset = cx - 192;
 	CWnd *pWnd = GetDlgItem(IDC_STATIC_PREVIEW);
 	if (pWnd && pWnd->GetSafeHwnd())
 	{
