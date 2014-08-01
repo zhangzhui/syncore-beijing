@@ -62,7 +62,7 @@ void CALLBACK ProcessRecvData(long lHandle, void* lpBuf, long lSize, long lDecod
 #endif
 
 
-	if (pDlg->m_bRecord && pHead->frame_type != A_FRAME_TYPE)
+	if (pDlg->m_bRecord/* && pHead->frame_type != A_FRAME_TYPE*/)
 	{
 		//Ö»±£´æÂ¼Ïñ
 		//A_FRAME_TYPEÎªÉùÒô
