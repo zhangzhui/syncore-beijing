@@ -63,6 +63,7 @@ protected:
 	afx_msg void SetCameraID(LPCTSTR strCameraID);
 	afx_msg void Init();
 	afx_msg void SetDisplayMode(long lDisplayMode);
+	afx_msg void Excute(LPCTSTR strArgv);
 	//}}AFX_DISPATCH
 	DECLARE_DISPATCH_MAP()
 
@@ -85,6 +86,7 @@ public:
 	dispidSetCameraID = 6L,
 	dispidInit = 7L,
 	dispidSetDisplayMode = 8L,
+	dispidExcute = 9L,
 	//}}AFX_DISP_ID
 	};
 };

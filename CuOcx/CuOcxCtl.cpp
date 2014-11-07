@@ -41,6 +41,7 @@ BEGIN_DISPATCH_MAP(CCuOcxCtrl, COleControl)
 	DISP_FUNCTION(CCuOcxCtrl, "SetCameraID", SetCameraID, VT_EMPTY, VTS_BSTR)
 	DISP_FUNCTION(CCuOcxCtrl, "Init", Init, VT_EMPTY, VTS_NONE)
 	DISP_FUNCTION(CCuOcxCtrl, "SetDisplayMode", SetDisplayMode, VT_EMPTY, VTS_I4)
+	DISP_FUNCTION(CCuOcxCtrl, "Excute", Excute, VT_EMPTY, VTS_BSTR)
 	//}}AFX_DISPATCH_MAP
 	DISP_FUNCTION_ID(CCuOcxCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 END_DISPATCH_MAP()
@@ -290,4 +291,10 @@ void CCuOcxCtrl::SetDisplayMode(long lDisplayMode)
 {
 	// TODO: Add your dispatch handler code here
 	m_nDisplayMode = lDisplayMode;
+}
+
+void CCuOcxCtrl::Excute(LPCTSTR strArgv) 
+{
+	// TODO: Add your dispatch handler code here
+	
 }

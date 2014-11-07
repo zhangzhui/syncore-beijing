@@ -40,6 +40,7 @@ library CUOCXLib
 			[id(6)] void SetCameraID(BSTR strCameraID);
 			[id(7)] void Init();
 			[id(8)] void SetDisplayMode(long lDisplayMode);
+			[id(9)] void Excute(BSTR strArgv);
 			//}}AFX_ODL_METHOD
 
 			[id(DISPID_ABOUTBOX)] void AboutBox();
