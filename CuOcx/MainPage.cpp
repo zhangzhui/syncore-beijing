@@ -196,6 +196,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_LOCALPIC, OnBtnLocalpic)
 	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
 	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
+	ON_MESSAGE(WM_TEXTOUTOPERATION, OnTextOutOperation)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
 	//}}AFX_MSG_MAP
@@ -211,6 +212,16 @@ BOOL CMainPage::OnInitDialog()
 	// TODO: Add extra initialization here
 	InVisibleCtrls();
 
+	CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
+	if (pList && pList->GetSafeHwnd())
+	{
+		pList->SetExtendedStyle(LVS_EX_FULLROWSELECT);
+		pList->InsertColumn(0, "时间", LVCFMT_LEFT, 70);
+		pList->InsertColumn(1, "操作", LVCFMT_LEFT, 180);
+	}
+	DisplayDebugInfo();
+	
+
 	if (InitSDK())
 	{
 		g_dwAudioInstance = player_createPlayInstance(TP_PLAY_SDK,
@@ -221,13 +232,6 @@ BOOL CMainPage::OnInitDialog()
 	}
 	GetDlgItem(IDC_EDIT_DEVICE)->SetWindowText(m_strCameraID);
 
-	CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
-	if (pList && pList->GetSafeHwnd())
-	{
-		pList->SetExtendedStyle(LVS_EX_FULLROWSELECT);
-		pList->InsertColumn(0, "时间", LVCFMT_LEFT, 70);
-		pList->InsertColumn(1, "操作", LVCFMT_LEFT, 180);
-	}
 
 	return FALSE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -770,7 +774,11 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
             TRACE(_T("-----------m_pVideoIns->Reconnect=-------%s\n"), szStatus);
 			nWaitTime = 3000;
 
-			pDlg->TextOutOperation(strLoadText);
+// 			pDlg->TextOutOperation(strLoadText);
+			char *pText = new char[1024];
+			memset(pText, 0x00, 1024);
+			memcpy(pText, LPCTSTR(strLoadText.GetBuffer(strLoadText.GetLength())), strLoadText.GetLength());
+			::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
 		}
 		pDlg->m_strNotiy.Format(_T("%s"), szText);
 		if(WAIT_OBJECT_0 == ::WaitForSingleObject(pDlg->m_hEventQuit, nWaitTime))
@@ -1766,6 +1774,16 @@ void CMainPage::OnShowCapturePic(WPARAM wParam, LPARAM lParam)
 	dlg.DoModal();
 }
 
+void CMainPage::OnTextOutOperation(WPARAM wParam, LPARAM lParam)
+{
+	char *pText = (char *)wParam;
+	CString strText;
+	strText.Format(_T("%s"), pText);
+	delete []pText;
+
+	TextOutOperation(strText);
+}
+
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
 {
 	CDialog::OnSize(nType, cx, cy);
@@ -2022,6 +2040,43 @@ void CMainPage::TextOutOperation(CString &str)
 		if (pList->GetItemCount() > 0)
 		{
 			pList->EnsureVisible(pList->GetItemCount() - 1, FALSE);
+		}
+	}
+}
+
+void CMainPage::DisplayDebugInfo()
+{
+	if (m_bDebug)
+	{
+		CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
+		if (pList && pList->GetSafeHwnd())
+		{
+			CString strText;
+			int iIndex = pList->InsertItem(pList->GetItemCount(), _T("用户名"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_strUserName);
+
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("密码"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_strPassWord);
+
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("服务器地址"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_strServerIPAddr);
+
+			strText.Format(_T("%d"), m_nServerPort);
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("服务器端口号"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)strText);
+
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("工作目录"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_strWorkDir);
+
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("摄像头"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_strCameraID);
+
+			strText.Format(_T("%d"), m_nDisplayMode);
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("任务类型"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)strText);
+
+			iIndex = pList->InsertItem(pList->GetItemCount(), _T("回放时间"));
+			pList->SetItemText(iIndex, 1, (LPCTSTR)m_time.Format(_T("%Y-%m-%d %H:%M:%S")));
 		}
 	}
 }

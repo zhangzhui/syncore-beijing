@@ -17,6 +17,7 @@
 #define WM_CLEARDEVICELIST (WM_USER + 3)
 #define WM_CUNETLIB (WM_USER + 4)
 #define WM_SHOWCAPTUREPIC (WM_USER + 5)
+#define WM_TEXTOUTOPERATION (WM_USER + 6)
 
 enum eDISPLAYMODE
 {
@@ -88,6 +89,7 @@ protected:
 	static UINT Thread_Status(LPVOID lParam);
 
 	void InVisibleCtrls();
+	void DisplayDebugInfo();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
@@ -119,6 +121,7 @@ protected:
 	afx_msg void OnBtnLocalpic();
 	afx_msg void OnBtnLocalrecord();
 	afx_msg void OnShowCapturePic(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnTextOutOperation(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnBtnLocalsoundrecord();
 	//}}AFX_MSG
