@@ -15,6 +15,7 @@
 #define IDS_CUOCX_PPG_CAPTION           200
 #define IDD_PROPPAGE_CUOCX              200
 #define IDC_STATIC_PREVIEW              202
+#define IDD_DIALOG_SELECT_CAMERA        202
 #define IDC_STATIC_DEVICE               203
 #define IDC_EDIT_DEVICE                 204
 #define IDC_BTN_OPEN_VIDEO              205
@@ -41,6 +42,8 @@
 #define IDC_STATIC_SATURATION           225
 #define IDC_BTN_LOCALSOUNDRECORD        226
 #define IDC_LIST_OP                     228
+#define IDC_LIST_RESULT                 230
+#define IDC_COMBO_DEVICE                231
 #define IDC_BUTTON_STOP                 1008
 #define IDC_BUTTON_LENS1                1017
 #define IDC_BUTTON_LENS2                1018
@@ -92,9 +95,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        202
+#define _APS_NEXT_RESOURCE_VALUE        203
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         229
+#define _APS_NEXT_CONTROL_VALUE         232
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

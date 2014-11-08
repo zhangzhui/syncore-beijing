@@ -6,6 +6,7 @@
 #include "MainPage.h"
 #include "VideoInstance.h"
 #include "DlgPicView.h"
+#include "SelectCameraDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -197,6 +198,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_LOCALRECORD, OnBtnLocalrecord)
 	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
 	ON_MESSAGE(WM_TEXTOUTOPERATION, OnTextOutOperation)
+	ON_MESSAGE(WM_DISPLAYALLDEVICEMATCHCAMERAID, OnDisplayAllDeviceMatchCameraID)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
 	//}}AFX_MSG_MAP
@@ -230,7 +232,7 @@ BOOL CMainPage::OnInitDialog()
 
 		PostMessage(WM_LOGIN, NULL, NULL);
 	}
-	GetDlgItem(IDC_EDIT_DEVICE)->SetWindowText(m_strCameraID);
+// 	GetDlgItem(IDC_EDIT_DEVICE)->SetWindowText(m_strCameraID);
 
 
 	return FALSE;  // return TRUE unless you set the focus to a control
@@ -416,6 +418,9 @@ void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
 				CU_NET_LIB::GetDomainInfo(g_dwServerId, (LPCTSTR)g_szDomainID, sizeof(g_szDomainID) - 1);
 			}
 		}
+
+		//获得完设备列表后，查询与m_strCameraID匹配的摄像头列出来
+		PostMessage(WM_DISPLAYALLDEVICEMATCHCAMERAID, NULL, NULL);
 	}
 	else
 	{
@@ -1784,6 +1789,12 @@ void CMainPage::OnTextOutOperation(WPARAM wParam, LPARAM lParam)
 	TextOutOperation(strText);
 }
 
+void CMainPage::OnDisplayAllDeviceMatchCameraID(WPARAM wParam, LPARAM lParam)
+{
+	CSelectCameraDlg dlg;
+	dlg.DoModal();
+}
+
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
 {
 	CDialog::OnSize(nType, cx, cy);
@@ -1803,7 +1814,7 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	int iPix = 17;
 	CRect rc;
 	//与右边框距离恒为7像素的控件
-	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_EDIT_DEVICE, IDC_BTN_CLOSE_VIDEO,
+	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_COMBO_DEVICE, IDC_BTN_CLOSE_VIDEO,
 						IDC_BTN_OPENVOICE, IDC_BTN_LOCALPIC, IDC_BTN_LOCALSOUNDRECORD, IDC_LIST_OP};
 	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
 	for (i = 0; i < iCnt; i++)

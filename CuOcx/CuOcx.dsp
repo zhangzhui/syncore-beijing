@@ -248,6 +248,10 @@ SOURCE=.\PicScrollView.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\SelectCameraDlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
 # End Source File
@@ -306,6 +310,10 @@ SOURCE=.\PicScrollView.h
 # Begin Source File
 
 SOURCE=.\Resource.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SelectCameraDlg.h
 # End Source File
 # Begin Source File
 
