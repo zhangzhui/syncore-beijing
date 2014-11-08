@@ -13,6 +13,23 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define KEY_SEPERATOR "\""
+#define KEY_COLON ":"
+
+#define KEY_PATH "-P"
+#define KEY_CAMERA "-C"
+#define KEY_CONNECT_STR "-N"
+#define KEY_TASK_NO "-A"
+#define KEY_TASK_TYPE "-B"
+#define KEY_DEBUG "-D"
+
+#define KEY_PATH_LOWER "-p"
+#define KEY_CAMERA_LOWER "-c"
+#define KEY_CONNECT_STR_LOWER "-n"
+#define KEY_TASK_NO_LOWER "-a"
+#define KEY_TASK_TYPE_LOWER "-b"
+#define KEY_DEBUG_LOWER "-d"
+
 
 IMPLEMENT_DYNCREATE(CCuOcxCtrl, COleControl)
 
@@ -143,6 +160,9 @@ CCuOcxCtrl::CCuOcxCtrl()
 
 	m_nServerPort = 0;
 	m_nDisplayMode = eMode_Normal;
+
+	m_bDebug = FALSE;
+	m_time = 0;
 }
 
 
@@ -262,6 +282,8 @@ void CCuOcxCtrl::Init()
 	m_pMainPage->SetWorkDir(m_strWorkDir);
 	m_pMainPage->SetCameraID(m_strCameraID);
 	m_pMainPage->SetDisplayMode(m_nDisplayMode);
+	m_pMainPage->SetPlaybackTime(m_time);
+	m_pMainPage->SetDebugMode(m_bDebug);
 
 	if (m_pMainPage->Create(IDD_PROPPAGE_MAIN, this))
 	{
@@ -296,5 +318,106 @@ void CCuOcxCtrl::SetDisplayMode(long lDisplayMode)
 void CCuOcxCtrl::Excute(LPCTSTR strArgv) 
 {
 	// TODO: Add your dispatch handler code here
-	
+	TRACE(_T("Parameter recv: %s\n"), strArgv);
+	ParseParameter(strArgv);
+	Init();
+}
+
+void CCuOcxCtrl::ParseParameter(CString strParam)
+{
+	int iPos = strParam.Find(KEY_PATH);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		int iParamBegin = strParam.Find(KEY_SEPERATOR, iPos);
+		ASSERT(iParamBegin != -1);
+		if (iParamBegin != -1)
+		{
+			int iParamEnd = strParam.Find(KEY_SEPERATOR, iParamBegin + 1);
+			ASSERT(iParamEnd != -1);
+			if (iParamEnd != -1)
+			{
+				SetWorkDir(strParam.Mid(iParamBegin + 1, iParamEnd - iParamBegin - 1));
+			}
+		}
+	}
+
+	iPos = strParam.Find(KEY_CAMERA);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		int iParamBegin = strParam.Find(KEY_SEPERATOR, iPos);
+		ASSERT(iParamBegin != -1);
+		if (iParamBegin != -1)
+		{
+			int iParamEnd = strParam.Find(KEY_SEPERATOR, iParamBegin + 1);
+			ASSERT(iParamEnd != -1);
+			if (iParamEnd != -1)
+			{
+				SetCameraID(strParam.Mid(iParamBegin + 1, iParamEnd - iParamBegin - 1));
+			}
+		}
+	}
+
+	iPos = strParam.Find(KEY_CONNECT_STR);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		int iParamBegin = strParam.Find(KEY_SEPERATOR, iPos);
+		ASSERT(iParamBegin != -1);
+		if (iParamBegin != -1)
+		{
+			int iParamEnd = strParam.Find(KEY_SEPERATOR, iParamBegin + 1);
+			ASSERT(iParamEnd != -1);
+			if (iParamEnd != -1)
+			{
+				CString str = strParam.Mid(iParamBegin + 1, iParamEnd - iParamBegin - 1);
+				int iColonPos = str.Find(KEY_COLON);
+				ASSERT(iColonPos != -1);
+				if (iColonPos != -1)
+				{
+					SetServerPort(atoi(str.Mid(iColonPos + 1, str.GetLength() - iColonPos - 1)));
+					SetServerIPAddr(str.Mid(0, iColonPos));
+				}
+			}
+		}
+	}
+
+	iPos = strParam.Find(KEY_TASK_NO);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		int iParamBegin = strParam.Find(KEY_SEPERATOR, iPos);
+		ASSERT(iParamBegin != -1);
+		if (iParamBegin != -1)
+		{
+			int iParamEnd = strParam.Find(KEY_SEPERATOR, iParamBegin + 1);
+			ASSERT(iParamEnd != -1);
+			if (iParamEnd != -1)
+			{
+				CString strTime = strParam.Mid(iParamBegin + 1, iParamEnd - iParamBegin - 1).Right(14);//YYYYMMDDHHMMSS = 14
+				int iyear = atoi(strTime.Mid(0, 4));
+				int imonth = atoi(strTime.Mid(4, 2));
+				int iday = atoi(strTime.Mid(6, 2));
+				int ihour = atoi(strTime.Mid(8, 2));
+				int iminute = atoi(strTime.Mid(10, 2));
+				int isecond = atoi(strTime.Mid(12, 2));
+				m_time = CTime(iyear, imonth, iday, ihour, iminute, isecond);
+			}
+		}
+	}
+
+	iPos = strParam.Find(KEY_TASK_TYPE);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		char cMode = strParam[iPos + 3];
+		SetDisplayMode(atoi(&cMode));
+	}
+
+	iPos = strParam.Find(KEY_DEBUG);
+	if (iPos != -1)
+	{
+		m_bDebug = TRUE;
+	}
 }

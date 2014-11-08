@@ -15,6 +15,7 @@ class CCuOcxCtrl : public COleControl
 {
 	DECLARE_DYNCREATE(CCuOcxCtrl)
 private:
+	void ParseParameter(CString strParam);
 	CString m_strUserName;
 	CString m_strPassWord;
 	CString m_strServerIPAddr;
@@ -22,6 +23,8 @@ private:
 	CString m_strWorkDir;
 	CString m_strCameraID;
 	long m_nDisplayMode;
+	BOOL m_bDebug;
+	CTime m_time;
 
 	CMainPage *m_pMainPage;
 

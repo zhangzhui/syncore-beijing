@@ -129,6 +129,8 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 	m_nServerPort = 0;
 	m_strWorkDir.Empty();
 	m_strCameraID.Empty();
+	m_bDebug = FALSE;
+	m_time = 0;
 
 	m_pVideoIns = NULL;
 
@@ -271,6 +273,16 @@ void CMainPage::SetCameraID(LPCTSTR strCameraID)
 void CMainPage::SetDisplayMode(long nMode)
 {
 	m_nDisplayMode = nMode;
+}
+
+void CMainPage::SetDebugMode(BOOL bDebug)
+{
+	m_bDebug = bDebug;
+}
+
+void CMainPage::SetPlaybackTime(CTime t)
+{
+	m_time = t;
 }
 
 void CMainPage::PostNcDestroy()

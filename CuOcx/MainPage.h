@@ -37,6 +37,8 @@ public:
 	void SetWorkDir(LPCTSTR strWorkDir);
 	void SetCameraID(LPCTSTR strCameraID);
 	void SetDisplayMode(long nMode);
+	void SetDebugMode(BOOL bDebug);
+	void SetPlaybackTime(CTime t);
 	BOOL MakeDir(char* filePath);
 
 	BOOL CreateRecordFile();
@@ -130,6 +132,8 @@ public:
 	CString m_strWorkDir;
 	CString m_strCameraID;
 	long m_nDisplayMode;
+	BOOL m_bDebug;//调试模式
+	CTime m_time;//回放用的时间
 
 	BOOL m_bClientStartUp;//启动客户端
 	BOOL m_bLoginFlag;
