@@ -84,7 +84,7 @@ void CDlgPlayList::InitCmbCtrls()
 	m_ctrlRecordSrc.AddString(_T("前端设备"));
 	m_ctrlRecordSrc.AddString(_T("网络中心"));
 	
-	m_ctrlRecordSrc.SetCurSel(2);
+	m_ctrlRecordSrc.SetCurSel(0);
 	SendMessage(WM_COMMAND, MAKEWPARAM(m_ctrlRecordSrc.GetDlgCtrlID(), CBN_SELCHANGE), (LPARAM)m_ctrlRecordSrc.GetSafeHwnd());
 	
 	
