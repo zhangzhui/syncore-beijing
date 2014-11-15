@@ -71,7 +71,7 @@ public:
 // Implementation
 protected:
 	BOOL InitSDK();
-	void InsertChildNode(LPCTSTR lpszQueryID, int iType);
+	void InsertChildNode(LPCTSTR lpszQueryID, int iType, CString strMidPath);
 	void StartStream(CU_NET_LIB::DEVICE_NODE devInfo);
 	void StopStream();
 	BOOL CreatePlayInstance(CU_NET_LIB::GUINFO guInfo);
@@ -141,6 +141,8 @@ public:
 	long m_nDisplayMode;
 	BOOL m_bDebug;//调试模式
 	CTime m_time;//回放用的时间
+
+	CString m_strMidPath;//保存本地录像的中间目录
 
 	BOOL m_bClientStartUp;//启动客户端
 	BOOL m_bLoginFlag;

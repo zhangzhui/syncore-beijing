@@ -413,7 +413,7 @@ void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
 			{
 				SendMessage(WM_CLEARDEVICELIST, NULL, NULL);
 				//查询设备信息，插入到list中
-				InsertChildNode(NULL, 0);
+				InsertChildNode(NULL, 0, _T(""));
 
 				CU_NET_LIB::GetDomainInfo(g_dwServerId, (LPCTSTR)g_szDomainID, sizeof(g_szDomainID) - 1);
 			}
@@ -428,7 +428,7 @@ void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
 	}
 }
 
-void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType)
+void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType, CString strMidPath)
 {
 	int iNodeCount = 0;
 	int i = 0;
@@ -463,13 +463,18 @@ void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType)
 		switch(dev_node[i].nType)
 		{
 		case 0://域
-			InsertChildNode((LPCTSTR)dev_node[i].DomainID, dev_node[i].nType);
+			InsertChildNode((LPCTSTR)dev_node[i].DomainID, dev_node[i].nType, strMidPath);
 			break;
 		case 1://机构
-			InsertChildNode((LPCTSTR)dev_node[i].AreaID, dev_node[i].nType);
+			strMidPath += _T("\\");
+			strMidPath += dev_node[i].AreaName;
+
+			InsertChildNode((LPCTSTR)dev_node[i].AreaID, dev_node[i].nType, strMidPath);
 			break;
 		case 2://功能节点
 			{
+				m_strMidPath = strMidPath;
+
 				CU_NET_LIB::DEVICE_NODE* pInfo = new CU_NET_LIB::DEVICE_NODE;
 				memset(pInfo, 0, sizeof(CU_NET_LIB::DEVICE_NODE));
 				memcpy(pInfo, &dev_node[i], sizeof(CU_NET_LIB::DEVICE_NODE));
@@ -1222,6 +1227,8 @@ void CMainPage::OnBtnReplay()
 		m_dlgPlayList.Create(CDlgPlayList::IDD, this);
     }
 	
+	m_dlgPlayList.SetWorkDir(m_strWorkDir);
+	m_dlgPlayList.SetWorkMiddlePath(m_strMidPath);
 	m_dlgPlayList.SetMainPage(this);
 	m_dlgPlayList.SetGuInfo(&m_GuInfo);
 	m_dlgPlayList.InitCmbCtrls();
@@ -1516,7 +1523,7 @@ void CMainPage::OnBtnLocalpic()
 				{
 					strcat(szPath, "\\");
 				}
-				strPath.Format("%s%s\\Picture\\%04d%02d%02d\\", szPath, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+				strPath.Format("%s%s\\%s\\Picture\\%04d%02d%02d\\", szPath, m_strMidPath, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
 				sprintf(szFilePath, "%s", strPath);
 			}			
 			
@@ -1604,7 +1611,7 @@ void CMainPage::DoRecord()
 	}
 	SYSTEMTIME systime;
 	::GetLocalTime(&systime);
-	strPath.Format("%s\\%s\\Record\\%04d%02d%02d\\", strDir, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+	strPath.Format("%s%s\\%s\\Record\\%04d%02d%02d\\", strDir, m_strMidPath, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
 	strFile.Format("%s%02d_%02d_%02d%s", strPath, systime.wHour,systime.wMinute,systime.wSecond,
 		(LPCTSTR)GetRecFileExt(guInfo.lManufactType));
 	

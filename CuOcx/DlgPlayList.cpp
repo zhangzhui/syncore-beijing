@@ -182,9 +182,7 @@ void CDlgPlayList::OnButtonQuery()
 	case 0: //本地计算机
 		{
 			CString strPath = _T("");
-			char strTemp[MAX_PATH];
-			GetCurrentDirectory(MAX_PATH,/*(unsigned short *)*/strTemp);
-			strPath.Format(_T("%s\\%s\\Record\\%04d%02d%02d"),  strTemp,m_szGuName,
+			strPath.Format(_T("%s%s\\%s\\Record\\%04d%02d%02d"),  m_workDir, m_workMiddlePath, m_szGuName,
 				m_tDate.GetYear(),m_tDate.GetMonth (),m_tDate.GetDay());  // 录象文件位置
 			
 			if ( m_szPuid == _T("") || m_szGuid ==_T(""))
@@ -722,7 +720,7 @@ void CDlgPlayList::OnButtonQueryPic()
 	case 0: //本地电脑
 		{
 			CString strPath = _T("");
-			strPath.Format(_T(".\\%s\\Picture\\%04d%02d%02d"), m_szGuName,
+			strPath.Format(_T("%s%s\\%s\\Picture\\%04d%02d%02d"), m_workDir, m_workMiddlePath, m_szGuName,
 				m_tDate.GetYear(),m_tDate.GetMonth (),m_tDate.GetDay());  // 图片文件位置
 			
 			if ( m_szPuid == _T("") || m_szGuid ==_T(""))
@@ -1281,9 +1279,13 @@ void CDlgPlayList::OnMenuPlay()
 		char exePath[MAX_PATH];
 
 		sprintf(exePath,"%s\\%s",strPath,"topFilePlay.exe");
-		//strPlayExe = theApp.m_szAppPath + "topFilePlay.exe";
-		//strPlayExe += ".\\";
-		strPlayExe += "D:\\project\\CuSDK\\CuSDK\\topFilePlay.exe"; 
+		strPlayExe = exePath;
+// 		strPlayExe = AfxGetApp()->m_szAppPath + "topFilePlay.exe";
+// 		strPlayExe += ".\\";
+// 		strPlayExe += "D:\\project\\CuSDK\\CuSDK\\topFilePlay.exe"; 
+#ifdef _DEBUG
+		strPlayExe = _T("C:\\Program Files\\VideoMonitorSystem\\平台监控客户端\\FilePlay.exe");
+#endif
 		
 		STARTUPINFO stinfo; //启动窗口的信息
 		PROCESS_INFORMATION procinfo; //进程的信息
@@ -1295,7 +1297,7 @@ void CDlgPlayList::OnMenuPlay()
 			FALSE,NORMAL_PRIORITY_CLASS,NULL,NULL, &stinfo,&procinfo);
 		if ( result == FALSE )
 		{
-			AfxMessageBox(_T("Error!"));
+			AfxMessageBox(_T("找不到播放器!"));
 			return;
 		}
 	}
@@ -1417,4 +1419,14 @@ void CDlgPlayList::SetMainPage(CMainPage *pMainPage)
 CMainPage* CDlgPlayList::GetMainPage()
 {
 	return m_pMainPage;
+}
+
+void CDlgPlayList::SetWorkDir(CString& dir)
+{
+	m_workDir = dir;
+}
+
+void CDlgPlayList::SetWorkMiddlePath(CString& midPath)
+{
+	m_workMiddlePath = midPath;
 }

@@ -58,6 +58,9 @@ public:
 	void SetMainPage(CMainPage *pMainPage);
 	CMainPage* GetMainPage();
 
+	void SetWorkDir(CString& dir);
+	void SetWorkMiddlePath(CString& midPath);
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDlgPlayList)
@@ -91,6 +94,8 @@ private:
 	CU_NET_LIB::VODSERVER_INFO m_vod_info;
 
 	CMainPage *m_pMainPage;
+	CString m_workDir;
+	CString m_workMiddlePath;
 };
 
 
