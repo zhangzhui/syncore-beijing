@@ -767,10 +767,17 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 		}
 		else
 		{
+			strLoadText="[系统消息]正在重新请求视频";
+			sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));
+			char *pText1 = new char[1024];
+			memset(pText1, 0x00, 1024);
+			memcpy(pText1, LPCTSTR(strLoadText.GetBuffer(strLoadText.GetLength())), strLoadText.GetLength());
+			::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText1), NULL);
+            
 			BOOL bRet = pDlg->m_pVideoIns->Reconnect();
 			if(bRet)
 			{
-				strLoadText="[系统消息]正在重新请求视频";
+				strLoadText="[系统消息]重新请求视频成功";
                 sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));	
 			}
 			else
