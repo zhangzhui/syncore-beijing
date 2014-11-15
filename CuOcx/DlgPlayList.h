@@ -61,6 +61,8 @@ public:
 	void SetWorkDir(CString& dir);
 	void SetWorkMiddlePath(CString& midPath);
 
+	void SetTime(CTime& time);
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDlgPlayList)

@@ -1430,3 +1430,24 @@ void CDlgPlayList::SetWorkMiddlePath(CString& midPath)
 {
 	m_workMiddlePath = midPath;
 }
+
+void CDlgPlayList::SetTime(CTime& time)
+{
+	m_tDate = time;
+
+	m_tStartTime = CTime(time.GetYear(),time.GetMonth(), time.GetDay(), 0, 0, 0);
+	m_tEndTime = CTime(time.GetYear(),time.GetMonth(), time.GetDay(), 23, 59, 59);
+
+	CTime newStart = time - CTimeSpan(0, 1, 0 ,0);
+	if (newStart > m_tStartTime)
+	{
+		m_tStartTime = newStart;
+	}
+
+	CTime newEnd = time + CTimeSpan(0, 1, 0, 0);
+	if (newEnd < m_tEndTime)
+	{
+		m_tEndTime = newEnd;
+	}
+	UpdateData(FALSE);
+}
