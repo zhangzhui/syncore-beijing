@@ -253,6 +253,11 @@ void CMainPage::SetUserName(LPCTSTR strUserName)
 void CMainPage::SetServerIPAddr(LPCTSTR strIPAddr)
 {
 	m_strServerIPAddr = strIPAddr;
+
+	char szServerIp[256]={0};
+	sprintf(szServerIp, (const char *)m_strServerIPAddr.GetBuffer(m_strServerIPAddr.GetLength()));
+	Assist::ParseDomain(szServerIp);
+	m_strServerIPAddr = szServerIp;
 }
 
 void CMainPage::SetServerPort(long nPort)

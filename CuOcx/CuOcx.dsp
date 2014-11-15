@@ -196,6 +196,10 @@ SOURCE="$(InputPath)"
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\assist.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CameraControlThread.cpp
 # End Source File
 # Begin Source File
@@ -267,6 +271,10 @@ SOURCE=.\VideoManage.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\assist.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\CameraControlThread.h

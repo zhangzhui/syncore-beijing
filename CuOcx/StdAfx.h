@@ -52,6 +52,7 @@ using namespace MSXML2;
 #include "../include/I_AVI.H"
 #include "../include/PlayLib.h"
 #include <list>
+#include "assist.h"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "../lib/CU_NetLib.lib") 

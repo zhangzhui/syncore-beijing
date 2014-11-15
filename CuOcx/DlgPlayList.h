@@ -49,7 +49,6 @@ public:
 	void QueryList(int nQueryType,CU_NET_LIB::VODSERVER_INFO *pInfo, int iRecordSrcType, int iSearchType,
 		      CTime tDate, CTime tStartTime, CTime tEndTime);
 	void SetBaseInfo(int nType, CU_NET_LIB::GUINFO *pGuInfo, CU_NET_LIB::VODSERVER_INFO *pVodInfo);
-	BOOL ParseDomain(char* szDomainName);
 	void InitListCtrlHeaders();
 	void SetGuInfo(CU_NET_LIB::GUINFO *pGuInfo);
 	int GetSearchType();

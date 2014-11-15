@@ -141,7 +141,7 @@ void CNetVodDlg::OnButtonPlay()
 		return;
 	}
 	sprintf(szServerIp, (const char *)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
-	pDlgPlayList->ParseDomain(szServerIp);
+	Assist::ParseDomain(szServerIp);
 	
 
 	srvAddrinfo.lLocalCsgAddr.S_un.S_addr = inet_addr(szServerIp);

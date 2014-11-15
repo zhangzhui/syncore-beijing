@@ -332,7 +332,7 @@ void CDlgPlayList::OnButtonQuery()
 			CMainPage* pMainDlg = m_pMainPage;
 			sprintf(szServerIp, (const char *)pMainDlg->m_strServerIPAddr);
 
-			ParseDomain(szServerIp);
+			Assist::ParseDomain(szServerIp);
 
 			  //套接字地址,端口
 			srvAddrinfo.lLocalCsgAddr.S_un.S_addr = inet_addr(szServerIp);
@@ -635,46 +635,6 @@ void CDlgPlayList::ResetFileName(int iType, LPCTSTR lpszPathName, CString &strFi
 
 
 
-///=== 将主机名转成地址 ============================================///
-//
-BOOL CDlgPlayList::ParseDomain(char* szDomainName)
-{ 
-	CString strIP;
-	struct hostent * hp;
-	char szIP[128] = {0};
-	if ((hp = gethostbyname(szDomainName)) != NULL)//根据网络域名ip获取对应的IP地址
-	{
-		struct in_addr inAddr;
-		LPSTR  lpAddr = hp->h_addr_list[0];
-		if(lpAddr)     
-		{
-			//struct in_addr inAddr;   
-			memmove(&inAddr, lpAddr, 4);   
-			strIP = inet_ntoa(inAddr);   
-			if(strIP.IsEmpty())
-			{
-				strIP =  _T("Not available");
-			}
-			sprintf(szIP, "%s", strIP);
-		}
-	}
-	else
-	{
-		int nRes = WSAGetLastError();
-		return FALSE;
-	}
-	
-	//this->m_strServerIP.Format("%s", szIP);
-	sprintf(szDomainName, szIP);
-	
-	return TRUE;
-}
-
-
-
-
-
-
 ///===查询图片=============================================================///
 //
 void CDlgPlayList::OnButtonQueryPic() 
@@ -867,7 +827,7 @@ void CDlgPlayList::OnButtonQueryPic()
 			CMainPage* pDlg = m_pMainPage;
 			sprintf(szServerIp, (LPSTR)(LPCSTR)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
 
-			ParseDomain(szServerIp);
+			Assist::ParseDomain(szServerIp);
 			srvAddrinfo.lLocalCsgAddr.S_un.S_addr = inet_addr(szServerIp);
 
 			srvAddrinfo.usLocalCsgPort = htons(pDlg->m_nServerPort+PORT_CSG_INCREASE_NUM);
