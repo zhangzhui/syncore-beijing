@@ -639,6 +639,7 @@ void CMainPage::StopStream()
 
 void  CMainPage::WaitForThreadStatus()
 {
+	CU_NET_LIB::CancelWaitting(g_dwServerId);//∑¿÷πø®À¿
 	::SetEvent(m_hEventQuit);
 	DWORD dwStart = GetTickCount();
 	if(m_pThread)
