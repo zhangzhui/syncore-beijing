@@ -14,12 +14,13 @@ class CSelectCameraDlg : public CDialog
 {
 // Construction
 public:
+	void Init();
 	CSelectCameraDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CSelectCameraDlg)
 	enum { IDD = IDD_DIALOG_SELECT_CAMERA };
-		// NOTE: the ClassWizard will add data members here
+	CListCtrl	m_DeviceList;
 	//}}AFX_DATA
 
 
@@ -36,6 +37,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CSelectCameraDlg)
 	virtual void OnOK();
+	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

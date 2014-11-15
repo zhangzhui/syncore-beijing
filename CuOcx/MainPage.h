@@ -19,6 +19,7 @@
 #define WM_SHOWCAPTUREPIC (WM_USER + 5)
 #define WM_TEXTOUTOPERATION (WM_USER + 6)
 #define WM_DISPLAYALLDEVICEMATCHCAMERAID (WM_USER + 7)
+#define WM_BEGIN_MONITOR (WM_USER + 8)
 
 enum eDISPLAYMODE
 {
@@ -124,6 +125,7 @@ protected:
 	afx_msg void OnShowCapturePic(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnTextOutOperation(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnDisplayAllDeviceMatchCameraID(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBeginMonitor(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnBtnLocalsoundrecord();
 	//}}AFX_MSG

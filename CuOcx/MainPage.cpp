@@ -199,6 +199,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_MESSAGE(WM_SHOWCAPTUREPIC, OnShowCapturePic)
 	ON_MESSAGE(WM_TEXTOUTOPERATION, OnTextOutOperation)
 	ON_MESSAGE(WM_DISPLAYALLDEVICEMATCHCAMERAID, OnDisplayAllDeviceMatchCameraID)
+	ON_MESSAGE(WM_BEGIN_MONITOR, OnBeginMonitor)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
 	//}}AFX_MSG_MAP
@@ -217,7 +218,7 @@ BOOL CMainPage::OnInitDialog()
 	CListCtrl *pList = (CListCtrl*)GetDlgItem(IDC_LIST_OP);
 	if (pList && pList->GetSafeHwnd())
 	{
-		pList->SetExtendedStyle(LVS_EX_FULLROWSELECT);
+		pList->SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		pList->InsertColumn(0, "时间", LVCFMT_LEFT, 70);
 		pList->InsertColumn(1, "操作", LVCFMT_LEFT, 180);
 	}
@@ -397,7 +398,6 @@ void CMainPage::OnLogin(WPARAM wParam, LPARAM lParam)
 		return;
 	}
 	m_bLoginFlag = TRUE;//用户登录成功
-	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPEN_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPEN_VIDEO)->GetSafeHwnd());
 }
 
 void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
@@ -431,7 +431,7 @@ void CMainPage::OnGetDeviceList(WPARAM wParam, LPARAM lParam)
 void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType)
 {
 	int iNodeCount = 0;
-	int i=0;
+	int i = 0;
 	HRESULT hr;
 	CString strName(_T(""));
 	CU_NET_LIB::DEVICE_NODE dev_node[MAX_DEVICE_NODE_NUM];
@@ -441,23 +441,25 @@ void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType)
 	{
 		return;
 	}
+
 	if (lpszQueryID == NULL)
 	{
-		CU_NET_LIB::DEVICE_NODE *pInfo = new CU_NET_LIB::DEVICE_NODE;
-		memset(pInfo, 0, sizeof(CU_NET_LIB::DEVICE_NODE));
-		memcpy(pInfo, &dev_node[i], sizeof(CU_NET_LIB::DEVICE_NODE));
-		
-		g_DeviceNodeList.push_back(pInfo);
+		//"平台"->"视频监控"
+// 		CU_NET_LIB::DEVICE_NODE *pInfo = new CU_NET_LIB::DEVICE_NODE;
+// 		memset(pInfo, 0, sizeof(CU_NET_LIB::DEVICE_NODE));
+// 		memcpy(pInfo, &dev_node[i], sizeof(CU_NET_LIB::DEVICE_NODE));
+// 		
+// 		g_DeviceNodeList.push_back(pInfo);
 		i++;
 	}
 
 	for(i; i< iNodeCount; i++)
 	{
-		CU_NET_LIB::DEVICE_NODE *pInfo = new CU_NET_LIB::DEVICE_NODE;
-		memset(pInfo, 0, sizeof(CU_NET_LIB::DEVICE_NODE));
-		memcpy(pInfo, &dev_node[i], sizeof(CU_NET_LIB::DEVICE_NODE));
-		
-		g_DeviceNodeList.push_back(pInfo);
+		if (m_strCameraID.Find(dev_node[i].AreaName) == -1)
+		{
+			continue;
+		}
+
 		switch(dev_node[i].nType)
 		{
 		case 0://域
@@ -467,6 +469,12 @@ void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType)
 			InsertChildNode((LPCTSTR)dev_node[i].AreaID, dev_node[i].nType);
 			break;
 		case 2://功能节点
+			{
+				CU_NET_LIB::DEVICE_NODE* pInfo = new CU_NET_LIB::DEVICE_NODE;
+				memset(pInfo, 0, sizeof(CU_NET_LIB::DEVICE_NODE));
+				memcpy(pInfo, &dev_node[i], sizeof(CU_NET_LIB::DEVICE_NODE));
+				g_DeviceNodeList.push_back(pInfo);//这个才是真正的摄像头
+			}
 			break;
 		default:
 			break;
@@ -508,31 +516,24 @@ void CMainPage::OnBtnOpenVideo()
 	memset(&m_GuInfo, 0x00, sizeof(CU_NET_LIB::GUINFO));
 	m_GuInfo.bState = TRUE;
 
-	//查找设备
-	USE_SYNCHRONIZE
+	//选择要监控的摄像头
+	CWnd *pWnd = GetDlgItem(IDC_COMBO_DEVICE);
+	if (pWnd && pWnd->GetSafeHwnd())
 	{
-		CSingleLock sl(&g_GuInfoList);
-		if (!sl.Lock(NTIMEOUT))
-			return;
-
-		DEVICENODE_OCX::iterator iter = g_DeviceNodeList.begin();
-		DEVICENODE_OCX::iterator iterEnd = g_DeviceNodeList.end();
-		while(iter != iterEnd)
+		CComboBox *pDeviceComboBox = static_cast<CComboBox*>(pWnd);
+		if (pDeviceComboBox && pDeviceComboBox->GetSafeHwnd())
 		{
-			CU_NET_LIB::DEVICE_NODE *pNode = *iter;
-			if (pNode->guInfo.GUType == GU_TYPE_AV_MASTER
-				|| pNode->guInfo.GUType == GU_TYPE_AV_SLAVE)
-			{
-				//音视频
-				if (strcmp(pNode->guInfo.GUName, (const char *)m_strCameraID.GetBuffer(m_strCameraID.GetLength())) == 0)
-				{
-					m_pDeviceNode = pNode;
-					m_GuInfo = pNode->guInfo;
-					break;
-				}
-			}
-			iter++;
+			int iCurSel = pDeviceComboBox->GetCurSel();
+			DWORD itemData = pDeviceComboBox->GetItemData(iCurSel);
+			m_pDeviceNode = reinterpret_cast<CU_NET_LIB::DEVICE_NODE *>(itemData);
+			m_GuInfo = m_pDeviceNode->guInfo;
 		}
+	}
+
+	if (!m_GuInfo.bState)
+	{
+		AfxMessageBox(_T("该摄像头处于离线状态，无法操作！"));
+		return;
 	}
 
 	if (m_nDisplayMode == eMode_OnlyReplayBtn)
@@ -556,7 +557,8 @@ void CMainPage::OnBtnOpenVideo()
 		StartStream(*m_pDeviceNode);
 		m_bOpenVideo = TRUE;
 		GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(FALSE);
-		CString str("打开视频");
+		CString str;
+		str.Format(_T("打开[%s]视频"), m_GuInfo.GUName);
 		TextOutOperation(str);
 	}
 }
@@ -821,7 +823,8 @@ void CMainPage::OnBtnCloseVideo()
 	m_bOpenVideo = FALSE;
 	GetDlgItem(IDC_BTN_OPEN_VIDEO)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BTN_CLOSE_VIDEO)->EnableWindow(FALSE);
-	CString str("关闭视频");
+	CString str;
+	str.Format(_T("关闭[%s]视频"), m_GuInfo.GUName);
 	TextOutOperation(str);
 }
 
@@ -1791,8 +1794,77 @@ void CMainPage::OnTextOutOperation(WPARAM wParam, LPARAM lParam)
 
 void CMainPage::OnDisplayAllDeviceMatchCameraID(WPARAM wParam, LPARAM lParam)
 {
-	CSelectCameraDlg dlg;
+	//更新主界面上的显示
+	CWnd *pWnd = GetDlgItem(IDC_COMBO_DEVICE);
+	if (pWnd && pWnd->GetSafeHwnd())
+	{
+		CComboBox *pDeviceComboBox = static_cast<CComboBox*>(pWnd);
+		if (pDeviceComboBox && pDeviceComboBox->GetSafeHwnd())
+		{
+			pDeviceComboBox->ResetContent();
+			
+			USE_SYNCHRONIZE
+			{
+				CSingleLock sl(&g_GuInfoList);
+				if (!sl.Lock(NTIMEOUT))
+					return;
+				
+				DEVICENODE_OCX::iterator iter = g_DeviceNodeList.begin();
+				DEVICENODE_OCX::iterator iterEnd = g_DeviceNodeList.end();
+				while(iter != iterEnd)
+				{
+					CU_NET_LIB::DEVICE_NODE *pNode = *iter;
+					if (pNode->guInfo.GUType == GU_TYPE_AV_MASTER
+						|| pNode->guInfo.GUType == GU_TYPE_AV_SLAVE)
+					{
+						//音视频
+						CString strDeviceName(pNode->guInfo.GUName);
+						if (!pNode->guInfo.bState)
+						{
+							strDeviceName += _T("(离线)");
+						}
+						int iItemPos = pDeviceComboBox->AddString(strDeviceName);
+						pDeviceComboBox->SetItemData(iItemPos, (DWORD)pNode);
+					}
+					iter++;
+				}
+			}
+
+			pDeviceComboBox->SetCurSel(0);
+		}
+	}
+
+	//给用户显示的一个对话框
+	CSelectCameraDlg dlg(this);
 	dlg.DoModal();
+}
+
+void CMainPage::OnBeginMonitor(WPARAM wParam, LPARAM lParam)
+{
+	//首先是要同步组合框的内容
+	CU_NET_LIB::DEVICE_NODE *pNode = (CU_NET_LIB::DEVICE_NODE*)wParam;
+	
+	CWnd *pWnd = GetDlgItem(IDC_COMBO_DEVICE);
+	if (pWnd && pWnd->GetSafeHwnd())
+	{
+		CComboBox *pDeviceComboBox = static_cast<CComboBox*>(pWnd);
+		if (pDeviceComboBox && pDeviceComboBox->GetSafeHwnd())
+		{
+			int iCnt = pDeviceComboBox->GetCount();
+			int iPos = 0;
+			for (; iPos < iCnt; iPos++)
+			{
+				DWORD itemData = pDeviceComboBox->GetItemData(iPos);
+				if (itemData == (DWORD)pNode)
+				{
+					pDeviceComboBox->SetCurSel(iPos);
+					break;
+				}
+			}
+		}
+	}
+
+	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPEN_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPEN_VIDEO)->GetSafeHwnd());
 }
 
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
