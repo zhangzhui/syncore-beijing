@@ -168,7 +168,7 @@ public:
 
 	unsigned long m_play_id;
 	DWORD m_nCountTest;
-	CU_NET_LIB::DEVICE_NODE m_DevInfo;
+// 	CU_NET_LIB::DEVICE_NODE m_DevInfo;
 
 	CString m_strVodIp;
     int m_nVodPort;

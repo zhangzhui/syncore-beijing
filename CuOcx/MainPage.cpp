@@ -148,7 +148,7 @@ CMainPage::CMainPage(CWnd* pParent /*=NULL*/)
 	m_bLoginFlag = TRUE;
 	ZeroMemory(&m_GuInfo, sizeof(CU_NET_LIB::GUINFO));
 	m_bOpenVideo = FALSE;
-	ZeroMemory(&m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
+// 	ZeroMemory(&m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
 	m_bVoice = FALSE;
 	m_bSoundAllow = FALSE;
 }
@@ -736,7 +736,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 				{
 					CString strMsg;
 					CString strDes;
-					strDes.Format(_T("%s:"), pDlg->m_DevInfo.guInfo.GUName);					
+					strDes.Format(_T("%s:"), pDlg->m_GuInfo.GUName);					
 					strDes += strMsg;
 // 					pDlg->m_strNotiy.Format(_T("%s"), strDes);
 					if (pDlg->m_pVideoIns)
@@ -748,7 +748,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 					if( pDlg->m_bSoundAllow)
 						pDlg->m_bSoundAllow = FALSE;
 //					pDlg->m_bPause = FALSE; // 取消暂停标志
-					ZeroMemory(&pDlg->m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
+// 					ZeroMemory(&pDlg->m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
 
 					char *pText = new char[1024];
 					memset(pText, 0x00, 1024);
@@ -1749,13 +1749,23 @@ BOOL CMainPage::CreateRecordFile()
     CString strLoadText;
 	CString  strPath = _T("");
 	CString  strFile = _T("");
+	CString  strDir = _T("");
 	char szFilePath[510] = {0};
+
+	if (!m_strWorkDir.IsEmpty())
+	{
+		strDir = m_strWorkDir;
+	}
+	else
+	{
+		strDir = _T(".");
+	}
 	
-	CU_NET_LIB::GUINFO guInfo = m_DevInfo.guInfo;
+	CU_NET_LIB::GUINFO guInfo = m_GuInfo;
 	
 	SYSTEMTIME systime;
 	::GetLocalTime(&systime);
-	strPath.Format(".\\%s\\Record\\%04d%02d%02d\\", guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
+	strPath.Format("%s%s\\%s\\Record\\%04d%02d%02d\\", strDir, m_strMidPath, guInfo.GUName, systime.wYear, systime.wMonth,systime.wDay);
 	strFile.Format("%s%02d_%02d_%02d%s", strPath, systime.wHour,systime.wMinute,systime.wSecond,
 		(LPCTSTR)GetRecFileExt(guInfo.lManufactType));
 	sprintf(szFilePath, "%s", (LPCTSTR)strPath);
