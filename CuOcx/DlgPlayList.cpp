@@ -80,6 +80,7 @@ void CDlgPlayList::InitCmbCtrls()
 	//---------------------------------------
 	// 录像来源
 	//---------------------------------------
+	m_ctrlRecordSrc.ResetContent();
 	m_ctrlRecordSrc.AddString(_T("本地"));
 	m_ctrlRecordSrc.AddString(_T("前端设备"));
 	m_ctrlRecordSrc.AddString(_T("网络中心"));
@@ -91,6 +92,7 @@ void CDlgPlayList::InitCmbCtrls()
     //----------------------------------------
 	// 录像类型
 	//----------------------------------------
+	m_ctrlRecordType.ResetContent();
 	m_ctrlRecordType.AddString(_T("所有录像"));
 	m_ctrlRecordType.AddString(_T("定时录像"));
 	m_ctrlRecordType.AddString(_T("报警录像"));
