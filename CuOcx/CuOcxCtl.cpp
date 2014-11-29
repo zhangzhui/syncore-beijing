@@ -187,8 +187,14 @@ void CCuOcxCtrl::OnDraw(
 {
 	// TODO: Replace the following code with your own drawing code.
 	CRect rc = rcBounds;
-	pdc->FillRect(rcBounds, CBrush::FromHandle((HBRUSH)GetStockObject(WHITE_BRUSH)));
-	pdc->DrawText("This is a CuOcx control.", &rc, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
+	pdc->FillRect(rcBounds, CBrush::FromHandle((HBRUSH)GetStockObject(GRAY_BRUSH)));
+
+#ifdef _DEBUG
+	CString strDraw("This is a CuOcx control.");
+#elif
+	CString strDraw("");
+#endif
+	pdc->DrawText(strDraw, &rc, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 }
 
 
