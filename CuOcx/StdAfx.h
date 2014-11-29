@@ -51,6 +51,7 @@ using namespace MSXML2;
 #include "../include/vod.h"
 #include "../include/I_AVI.H"
 #include "../include/PlayLib.h"
+#include "../Include/BssClient.h"
 #include <list>
 #include "assist.h"
 
@@ -60,6 +61,7 @@ using namespace MSXML2;
 #pragma comment(lib, "../lib/AVI.lib")
 #pragma comment(lib, "../lib/PlayLib.lib")
 #pragma comment(lib, "../lib/PlaySDK.lib")
+#pragma comment(lib, "../lib/BssClient.lib")
 
 typedef struct _ptz_control_t
 {
