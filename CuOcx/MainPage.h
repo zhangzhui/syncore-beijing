@@ -147,6 +147,7 @@ public:
 	BOOL m_bClientStartUp;//Æô¶¯¿Í»§¶Ë
 	BOOL m_bLoginFlag;
 
+	CU_NET_LIB::GUINFO m_GuInfoForRePaly;
 	CU_NET_LIB::GUINFO m_GuInfo;
 	CU_NET_LIB::DEVICE_NODE *m_pDeviceNode;
 	BOOL m_bOpenVideo;

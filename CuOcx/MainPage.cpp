@@ -1229,6 +1229,23 @@ BOOL CMainPage::GetYTControlCmd(int iMessage, char *szCmd, char *szParam)
 void CMainPage::OnBtnReplay() 
 {
 	// TODO: Add your control notification handler code here
+	memset(&m_GuInfoForRePaly, 0x00, sizeof(CU_NET_LIB::GUINFO));
+	m_GuInfoForRePaly.bState = TRUE;
+	
+	//选择要监控的摄像头
+	CWnd *pWnd = GetDlgItem(IDC_COMBO_DEVICE);
+	if (pWnd && pWnd->GetSafeHwnd())
+	{
+		CComboBox *pDeviceComboBox = static_cast<CComboBox*>(pWnd);
+		if (pDeviceComboBox && pDeviceComboBox->GetSafeHwnd())
+		{
+			int iCurSel = pDeviceComboBox->GetCurSel();
+			DWORD itemData = pDeviceComboBox->GetItemData(iCurSel);
+			m_pDeviceNode = reinterpret_cast<CU_NET_LIB::DEVICE_NODE *>(itemData);
+			m_GuInfoForRePaly = m_pDeviceNode->guInfo;
+		}
+	}
+
 	if (m_dlgPlayList.GetSafeHwnd() == NULL)
     {
 		m_dlgPlayList.Create(CDlgPlayList::IDD, this);
@@ -1238,7 +1255,7 @@ void CMainPage::OnBtnReplay()
 	m_dlgPlayList.SetWorkDir(m_strWorkDir);
 	m_dlgPlayList.SetWorkMiddlePath(m_strMidPath);
 	m_dlgPlayList.SetMainPage(this);
-	m_dlgPlayList.SetGuInfo(&m_GuInfo);
+	m_dlgPlayList.SetGuInfo(&m_GuInfoForRePaly);
 	m_dlgPlayList.InitCmbCtrls();
 	m_dlgPlayList.ShowWindow(SW_SHOW);
 	m_dlgPlayList.PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BUTTON_QUERY, BN_CLICKED), (LPARAM)m_dlgPlayList.GetDlgItem(IDC_BUTTON_QUERY)->GetSafeHwnd());
