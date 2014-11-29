@@ -326,6 +326,14 @@ void CCuOcxCtrl::Excute(LPCTSTR strArgv)
 	// TODO: Add your dispatch handler code here
 	TRACE(_T("Parameter recv: %s\n"), strArgv);
 	ParseParameter(strArgv);
+
+	//调试用，不会提交
+	SetUserName(_T("admin"));
+	SetPassWord(_T("admin"));
+	SetServerIPAddr(_T("192.168.1.36"));
+	SetServerPort(9901);
+	SetCameraID(_T("A油田B厂C矿D队E平台（井）"));
+	SetDisplayMode(0);
 	Init();
 }
 

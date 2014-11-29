@@ -200,6 +200,7 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_MESSAGE(WM_TEXTOUTOPERATION, OnTextOutOperation)
 	ON_MESSAGE(WM_DISPLAYALLDEVICEMATCHCAMERAID, OnDisplayAllDeviceMatchCameraID)
 	ON_MESSAGE(WM_BEGIN_MONITOR, OnBeginMonitor)
+	ON_MESSAGE(WM_CLOSE_VIDEO, OnCloseVideo)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
 	//}}AFX_MSG_MAP
@@ -734,10 +735,10 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 				}
 				else
 				{
-					CString strMsg;
+// 					CString strMsg;
 					CString strDes;
 					strDes.Format(_T("%s:"), pDlg->m_GuInfo.GUName);					
-					strDes += strMsg;
+					strDes += _T("ÊÓÆµÇëÇóÊ§°Ü£¬ÇëÖØÊÔ£¡");
 // 					pDlg->m_strNotiy.Format(_T("%s"), strDes);
 					if (pDlg->m_pVideoIns)
 					{
@@ -754,6 +755,8 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 					memset(pText, 0x00, 1024);
 					memcpy(pText, LPCTSTR(strDes.GetBuffer(strDes.GetLength())), strDes.GetLength());
 					::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
+
+					::PostMessage(pDlg->GetSafeHwnd(), WM_CLOSE_VIDEO, NULL, NULL);
 					return FALSE;
 				}
 			}			
@@ -1926,6 +1929,11 @@ void CMainPage::OnBeginMonitor(WPARAM wParam, LPARAM lParam)
 	}
 
 	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_OPEN_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_OPEN_VIDEO)->GetSafeHwnd());
+}
+
+void CMainPage::OnCloseVideo(WPARAM wParam, LPARAM lParam)
+{
+	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_CLOSE_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd());
 }
 
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
