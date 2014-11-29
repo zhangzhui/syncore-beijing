@@ -400,6 +400,12 @@ void CMainPage::OnLogin(WPARAM wParam, LPARAM lParam)
 	else
 	{
 		MessageBox(_T("连接视频服务器失败！"));
+		CCuOcxCtrl* pParent = reinterpret_cast<CCuOcxCtrl*>(GetParent());
+		if (pParent && pParent->GetSafeHwnd())
+		{
+			pParent->m_pMainPage = NULL;
+		}
+		PostNcDestroy();
 		return;
 	}
 	m_bLoginFlag = TRUE;//用户登录成功

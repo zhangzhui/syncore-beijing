@@ -9,6 +9,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainPage dialog
+#include "CuOcxCtl.h"
 #include "VideoManage.h"
 #include "DlgPlayList.h"
 

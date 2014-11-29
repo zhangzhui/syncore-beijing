@@ -25,7 +25,7 @@ private:
 	long m_nDisplayMode;
 	BOOL m_bDebug;
 	CTime m_time;
-
+public:
 	CMainPage *m_pMainPage;
 
 // Constructor
