@@ -627,7 +627,7 @@ void CMainPage::StopStream()
 	CString strLoadText,strLoadText1;
 	if (!m_bStreamOpenFlag)
 	{
-		m_strNotiy.Empty();
+// 		m_strNotiy.Empty();
 		m_bStreamOpenFlag = FALSE;
 		return;
 	}	
@@ -738,7 +738,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 					CString strDes;
 					strDes.Format(_T("%s:"), pDlg->m_DevInfo.guInfo.GUName);					
 					strDes += strMsg;
-					pDlg->m_strNotiy.Format(_T("%s"), strDes);
+// 					pDlg->m_strNotiy.Format(_T("%s"), strDes);
 					if (pDlg->m_pVideoIns)
 					{
 						pDlg->m_pVideoIns->Stop((LONG)pDlg);
@@ -749,6 +749,11 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 						pDlg->m_bSoundAllow = FALSE;
 //					pDlg->m_bPause = FALSE; // 取消暂停标志
 					ZeroMemory(&pDlg->m_DevInfo, sizeof(CU_NET_LIB::DEVICE_NODE));
+
+					char *pText = new char[1024];
+					memset(pText, 0x00, 1024);
+					memcpy(pText, LPCTSTR(strDes.GetBuffer(strDes.GetLength())), strDes.GetLength());
+					::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
 					return FALSE;
 				}
 			}			
@@ -812,7 +817,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 			memcpy(pText, LPCTSTR(strLoadText.GetBuffer(strLoadText.GetLength())), strLoadText.GetLength());
 			::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
 		}
-		pDlg->m_strNotiy.Format(_T("%s"), szText);
+// 		pDlg->m_strNotiy.Format(_T("%s"), szText);
 		if(WAIT_OBJECT_0 == ::WaitForSingleObject(pDlg->m_hEventQuit, nWaitTime))
 			break;
 	}

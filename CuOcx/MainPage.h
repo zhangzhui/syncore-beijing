@@ -162,7 +162,7 @@ public:
 	HANDLE m_hEventQuit;//Thread_Status线程的等待退出事件
 	CWinThread *m_pThread;
 
-	CString m_strNotiy;
+// 	CString m_strNotiy;
 	BOOL m_bSoundAllow;
 	BOOL m_bVoice;
 
