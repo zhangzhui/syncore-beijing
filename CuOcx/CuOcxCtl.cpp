@@ -22,6 +22,7 @@ static char THIS_FILE[] = __FILE__;
 #define KEY_TASK_NO "-A"
 #define KEY_TASK_TYPE "-B"
 #define KEY_DEBUG "-D"
+#define KEY_USERNAME "-U"
 
 #define KEY_PATH_LOWER "-p"
 #define KEY_CAMERA_LOWER "-c"
@@ -29,6 +30,7 @@ static char THIS_FILE[] = __FILE__;
 #define KEY_TASK_NO_LOWER "-a"
 #define KEY_TASK_TYPE_LOWER "-b"
 #define KEY_DEBUG_LOWER "-d"
+#define KEY_USERNAME_LOWER "-u"
 
 
 IMPLEMENT_DYNCREATE(CCuOcxCtrl, COleControl)
@@ -327,13 +329,6 @@ void CCuOcxCtrl::Excute(LPCTSTR strArgv)
 	TRACE(_T("Parameter recv: %s\n"), strArgv);
 	ParseParameter(strArgv);
 
-	//调试用，不会提交
-	SetUserName(_T("admin"));
-	SetPassWord(_T("admin"));
-	SetServerIPAddr(_T("192.168.1.36"));
-	SetServerPort(9901);
-	SetCameraID(_T("A油田B厂C矿D队E平台（井）"));
-	SetDisplayMode(0);
 	Init();
 }
 
@@ -433,5 +428,22 @@ void CCuOcxCtrl::ParseParameter(CString strParam)
 	if (iPos != -1)
 	{
 		m_bDebug = TRUE;
+	}
+
+	iPos = strParam.Find(KEY_USERNAME);
+	ASSERT(iPos != -1);
+	if (iPos != -1)
+	{
+		int iParamBegin = strParam.Find(KEY_SEPERATOR, iPos);
+		ASSERT(iParamBegin != -1);
+		if (iParamBegin != -1)
+		{
+			int iParamEnd = strParam.Find(KEY_SEPERATOR, iParamBegin + 1);
+			ASSERT(iParamEnd != -1);
+			if (iParamEnd != -1)
+			{
+				SetUserName(strParam.Mid(iParamBegin + 1, iParamEnd - iParamBegin - 1));
+			}
+		}
 	}
 }
