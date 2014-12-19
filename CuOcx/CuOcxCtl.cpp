@@ -193,7 +193,7 @@ void CCuOcxCtrl::OnDraw(
 
 #ifdef _DEBUG
 	CString strDraw("This is a CuOcx control.");
-#elif
+#else
 	CString strDraw("");
 #endif
 	pdc->DrawText(strDraw, &rc, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
@@ -271,6 +271,7 @@ void CCuOcxCtrl::SetCameraID(LPCTSTR strCameraID)
 {
 	// TODO: Add your dispatch handler code here
 	m_strCameraID = strCameraID;
+	m_strCameraID.Replace(_T("/"), _T(""));
 }
 
 void CCuOcxCtrl::Init() 
