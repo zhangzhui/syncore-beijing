@@ -271,7 +271,7 @@ void CCuOcxCtrl::SetCameraID(LPCTSTR strCameraID)
 {
 	// TODO: Add your dispatch handler code here
 	m_strCameraID = strCameraID;
-	m_strCameraID.Replace(_T("/"), _T(""));
+	m_strCameraID.Replace(_T("0X2F"), _T(""));
 }
 
 void CCuOcxCtrl::Init() 

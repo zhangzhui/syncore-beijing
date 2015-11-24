@@ -467,7 +467,9 @@ void CMainPage::InsertChildNode(LPCTSTR lpszQueryID, int iType, CString strMidPa
 
 	for(i; i< iNodeCount; i++)
 	{
-		if (m_strCameraID.Find(dev_node[i].AreaName) == -1)
+		CString strAreaName = dev_node[i].AreaName;
+		strAreaName.Replace(_T("0X2F"), _T(""));
+		if (m_strCameraID.Find(strAreaName) == -1)
 		{
 			continue;
 		}
