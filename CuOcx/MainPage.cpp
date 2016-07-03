@@ -400,7 +400,7 @@ void CMainPage::OnLogin(WPARAM wParam, LPARAM lParam)
 	}
 	else
 	{
-		MessageBox(_T("连接视频服务器失败！"));
+		MessageBox(_T("连接视频服务器失败！可能出现的原因：\r\n  1.连接超时。\r\n  2.该用户已登录且不允许被抢占。"));
 		CCuOcxCtrl* pParent = reinterpret_cast<CCuOcxCtrl*>(GetParent());
 		if (pParent && pParent->GetSafeHwnd())
 		{
