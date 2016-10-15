@@ -1957,6 +1957,7 @@ void CMainPage::OnBeginMonitor(WPARAM wParam, LPARAM lParam)
 void CMainPage::OnCloseVideo(WPARAM wParam, LPARAM lParam)
 {
 	PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_CLOSE_VIDEO, BN_CLICKED), (LPARAM)GetDlgItem(IDC_BTN_CLOSE_VIDEO)->GetSafeHwnd());
+	ClearNewCheckBtnStatus();
 }
 
 void CMainPage::OnSize(UINT nType, int cx, int cy) 
