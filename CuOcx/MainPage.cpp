@@ -209,6 +209,8 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_RECORD_NEW, OnCheckRecordNew)
 	ON_BN_CLICKED(IDC_CHECK_PLAYBACK_NEW, OnCheckPlaybackNew)
 	ON_BN_CLICKED(IDC_CHECK_BROADCAST_NEW, OnCheckBroadcastNew)
+// 	ON_WM_PAINT()
+// 	ON_WM_NCPAINT()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -650,7 +652,7 @@ void CMainPage::StopStream()
 	WaitForThreadStatus();
 	m_bStreamOpenFlag = FALSE;
 //	CU_NET_LIB::RealVideoPreviewStop(g_dwServerId, m_hVideo)
-	Invalidate();
+	InvalidateRect(&m_preView);
 	m_GuInfo.bState = FALSE;
 }
 
@@ -1991,6 +1993,11 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 			iOffset = cx - iPix - rc.right;
 			rc.OffsetRect(iOffset, 0);
 			pWnd->MoveWindow(rc);
+
+			m_greenRect[i].left = rc.left - 10 - rc.Height();
+			m_greenRect[i].top = rc.top;
+			m_greenRect[i].right = rc.left - 10;
+			m_greenRect[i].bottom = rc.bottom;
 		}
 	}
 	
@@ -2056,6 +2063,7 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 		rc.right = iOffset;
 		rc.bottom = cy - 27;
 		pWnd->MoveWindow(rc);
+		m_preView = rc;
 	}
 
 
@@ -2295,6 +2303,7 @@ void CMainPage::OnCheckVideoNew()
 	}
 
 	pChechBox->SetCheck(m_bOpenVideo);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::OnCheckVoiceNew()
@@ -2302,6 +2311,7 @@ void CMainPage::OnCheckVoiceNew()
 	OnBtnOpensound();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_VOICE_NEW);
 	pChechBox->SetCheck(m_bSoundAllow);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::OnCheckCaptureNew()
@@ -2309,6 +2319,7 @@ void CMainPage::OnCheckCaptureNew()
 	OnBtnLocalpic();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_CAPTURE_NEW);
 	pChechBox->SetCheck(0);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::OnCheckRecordNew()
@@ -2316,6 +2327,7 @@ void CMainPage::OnCheckRecordNew()
 	OnBtnLocalrecord();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_RECORD_NEW);
 	pChechBox->SetCheck(m_bRecord);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::OnCheckPlaybackNew()
@@ -2323,6 +2335,7 @@ void CMainPage::OnCheckPlaybackNew()
 	OnBtnReplay();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_PLAYBACK_NEW);
 	pChechBox->SetCheck(0);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::OnCheckBroadcastNew()
@@ -2330,6 +2343,7 @@ void CMainPage::OnCheckBroadcastNew()
 	OnBtnOpenvoice();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_BROADCAST_NEW);
 	pChechBox->SetCheck(m_bVoice);
+	UpdateNewCheckBtnStatus();
 }
 
 void CMainPage::ClearNewCheckBtnStatus()
@@ -2342,4 +2356,47 @@ void CMainPage::ClearNewCheckBtnStatus()
 		CButton *pChechBox = (CButton *)GetDlgItem(newCheckBtns[i]);
 		pChechBox->SetCheck(0);
 	}
+}
+
+void CMainPage::UpdateNewCheckBtnStatus()
+{
+	BOOL drawEllipse[OPERATION_COUNT] = {m_bOpenVideo, m_bSoundAllow, 0, m_bRecord, 0, m_bVoice};
+	int i = 0;
+	UINT newCheckBtns[] = {IDC_CHECK_VIDEO_NEW, IDC_CHECK_VOICE_NEW, IDC_CHECK_CAPTURE_NEW, IDC_CHECK_RECORD_NEW, IDC_CHECK_PLAYBACK_NEW, IDC_CHECK_BROADCAST_NEW};
+	int iCnt = sizeof(newCheckBtns) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CButton *pChechBox = (CButton *)GetDlgItem(newCheckBtns[i]);
+		pChechBox->SetCheck(drawEllipse[i]);
+	}
+}
+
+void CMainPage::OnPaint() 
+{
+	CPaintDC dc(this); // device context for painting
+	// TODO: Add your message handler code here
+	CBrush greenBrush(RGB(0, 255, 0));
+	CBrush *pOldBrush = dc.SelectObject(&greenBrush);
+	
+	BOOL drawEllipse[OPERATION_COUNT] = {m_bOpenVideo, m_bSoundAllow, 0, m_bRecord, 0, m_bVoice};
+	int i = 0;
+	int iCnt = sizeof(m_greenRect) / sizeof(CRect);
+	for (i = 0; i < iCnt; i++)
+	{
+		if (drawEllipse[i])
+		{
+			dc.Ellipse(m_greenRect[i]);
+		}
+		else
+		{
+			InvalidateRect(&m_greenRect[i]);
+		}
+	}
+	
+	dc.SelectObject(pOldBrush);
+	// Do not call CDialog::OnPaint() for painting messages
+}
+
+void CMainPage::OnNcPaint()
+{
 }

@@ -13,6 +13,8 @@
 #include "VideoManage.h"
 #include "DlgPlayList.h"
 
+#define OPERATION_COUNT 6
+
 #define WM_LOGIN (WM_USER + 1)
 #define WM_GETDEVICELIST (WM_USER + 2)
 #define WM_CLEARDEVICELIST (WM_USER + 3)
@@ -95,6 +97,7 @@ protected:
 	void InVisibleCtrls();
 	void DisplayDebugInfo();
 	void ClearNewCheckBtnStatus();
+	void UpdateNewCheckBtnStatus();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
@@ -138,6 +141,8 @@ protected:
 	afx_msg void OnCheckRecordNew();
 	afx_msg void OnCheckPlaybackNew();
 	afx_msg void OnCheckBroadcastNew();
+	afx_msg void OnPaint();
+	afx_msg void OnNcPaint();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -194,6 +199,9 @@ public:
 	BOOL m_bSwitchSoundFile;//切换录音文件，用在关闭录音的时候
 	FILE *m_SoundFile;//录音文件
 	AVI_FILE m_hSoundFileRec;
+
+	CRect m_greenRect[OPERATION_COUNT];
+	CRect m_preView;
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
