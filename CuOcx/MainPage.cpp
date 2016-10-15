@@ -2290,6 +2290,7 @@ void CMainPage::OnCheckVideoNew()
 	else if (iCheck == 0)
 	{
 		OnBtnCloseVideo();
+		ClearNewCheckBtnStatus();
 	}
 
 	pChechBox->SetCheck(m_bOpenVideo);
@@ -2328,4 +2329,16 @@ void CMainPage::OnCheckBroadcastNew()
 	OnBtnOpenvoice();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_BROADCAST_NEW);
 	pChechBox->SetCheck(m_bVoice);
+}
+
+void CMainPage::ClearNewCheckBtnStatus()
+{
+	int i = 0;
+	UINT newCheckBtns[] = {IDC_CHECK_VIDEO_NEW, IDC_CHECK_VOICE_NEW, IDC_CHECK_CAPTURE_NEW, IDC_CHECK_RECORD_NEW, IDC_CHECK_PLAYBACK_NEW, IDC_CHECK_BROADCAST_NEW};
+	int iCnt = sizeof(newCheckBtns) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CButton *pChechBox = (CButton *)GetDlgItem(newCheckBtns[i]);
+		pChechBox->SetCheck(0);
+	}
 }

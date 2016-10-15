@@ -94,6 +94,7 @@ protected:
 
 	void InVisibleCtrls();
 	void DisplayDebugInfo();
+	void ClearNewCheckBtnStatus();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
