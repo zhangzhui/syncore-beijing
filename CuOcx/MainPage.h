@@ -94,6 +94,8 @@ protected:
 
 	void InVisibleCtrls();
 	void DisplayDebugInfo();
+
+	BOOL IsAllowedToOpenSound();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();
@@ -131,6 +133,12 @@ protected:
 	afx_msg void OnCloseVideo(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnBtnLocalsoundrecord();
+	afx_msg void OnCheckVideoNew();
+	afx_msg void OnCheckVoiceNew();
+	afx_msg void OnCheckCaptureNew();
+	afx_msg void OnCheckRecordNew();
+	afx_msg void OnCheckPlaybackNew();
+	afx_msg void OnCheckBroadcastNew();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

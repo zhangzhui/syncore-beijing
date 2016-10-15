@@ -203,6 +203,12 @@ BEGIN_MESSAGE_MAP(CMainPage, CDialog)
 	ON_MESSAGE(WM_CLOSE_VIDEO, OnCloseVideo)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_LOCALSOUNDRECORD, OnBtnLocalsoundrecord)
+	ON_BN_CLICKED(IDC_CHECK_VIDEO_NEW, OnCheckVideoNew)
+	ON_BN_CLICKED(IDC_CHECK_VOICE_NEW, OnCheckVoiceNew)
+	ON_BN_CLICKED(IDC_CHECK_CAPTURE_NEW, OnCheckCaptureNew)
+	ON_BN_CLICKED(IDC_CHECK_RECORD_NEW, OnCheckRecordNew)
+	ON_BN_CLICKED(IDC_CHECK_PLAYBACK_NEW, OnCheckPlaybackNew)
+	ON_BN_CLICKED(IDC_CHECK_BROADCAST_NEW, OnCheckBroadcastNew)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -874,7 +880,7 @@ void CMainPage::OnBtnCloseVideo()
 void CMainPage::OnBtnOpensound() 
 {
 	// TODO: Add your control notification handler code here
-	if (!m_bStreamOpenFlag || m_play_id == 0)
+	if (!IsAllowedToOpenSound())
 	{
 		return;
 	}
@@ -2266,4 +2272,66 @@ void CMainPage::DisplayDebugInfo()
 			pList->SetItemText(iIndex, 1, (LPCTSTR)m_time.Format(_T("%Y-%m-%d %H:%M:%S")));
 		}
 	}
+}
+
+void CMainPage::OnCheckVideoNew()
+{
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_VIDEO_NEW);
+	int iCheck = pChechBox->GetCheck();
+	if (iCheck == 1)
+	{
+		OnBtnOpenVideo();
+	}
+	else if (iCheck == 0)
+	{
+		OnBtnCloseVideo();
+	}
+}
+
+void CMainPage::OnCheckVoiceNew()
+{
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_VOICE_NEW);
+	if (!IsAllowedToOpenSound())
+	{
+		pChechBox->SetCheck(!pChechBox->GetCheck());
+		return;
+	}
+	OnBtnOpensound();
+}
+
+void CMainPage::OnCheckCaptureNew()
+{
+	OnBtnLocalpic();
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_CAPTURE_NEW);
+	pChechBox->SetCheck(0);
+}
+
+void CMainPage::OnCheckRecordNew()
+{
+	OnBtnLocalrecord();
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_RECORD_NEW);
+	pChechBox->SetCheck(m_bRecord);
+}
+
+void CMainPage::OnCheckPlaybackNew()
+{
+	OnBtnReplay();
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_PLAYBACK_NEW);
+	pChechBox->SetCheck(0);
+}
+
+void CMainPage::OnCheckBroadcastNew()
+{
+	OnBtnOpenvoice();
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_BROADCAST_NEW);
+	pChechBox->SetCheck(m_bVoice);
+}
+
+BOOL CMainPage::IsAllowedToOpenSound()
+{
+	if (!m_bStreamOpenFlag || m_play_id == 0)
+	{
+		return FALSE;
+	}
+	return TRUE;
 }
