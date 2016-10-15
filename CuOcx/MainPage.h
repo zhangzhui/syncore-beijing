@@ -94,8 +94,6 @@ protected:
 
 	void InVisibleCtrls();
 	void DisplayDebugInfo();
-
-	BOOL IsAllowedToOpenSound();
 	// Generated message map functions
 	//{{AFX_MSG(CMainPage)
 	virtual BOOL OnInitDialog();

@@ -880,7 +880,7 @@ void CMainPage::OnBtnCloseVideo()
 void CMainPage::OnBtnOpensound() 
 {
 	// TODO: Add your control notification handler code here
-	if (!IsAllowedToOpenSound())
+	if (!m_bStreamOpenFlag || m_play_id == 0)
 	{
 		return;
 	}
@@ -2286,17 +2286,15 @@ void CMainPage::OnCheckVideoNew()
 	{
 		OnBtnCloseVideo();
 	}
+
+	pChechBox->SetCheck(m_bOpenVideo);
 }
 
 void CMainPage::OnCheckVoiceNew()
 {
-	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_VOICE_NEW);
-	if (!IsAllowedToOpenSound())
-	{
-		pChechBox->SetCheck(!pChechBox->GetCheck());
-		return;
-	}
 	OnBtnOpensound();
+	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_VOICE_NEW);
+	pChechBox->SetCheck(m_bSoundAllow);
 }
 
 void CMainPage::OnCheckCaptureNew()
@@ -2325,13 +2323,4 @@ void CMainPage::OnCheckBroadcastNew()
 	OnBtnOpenvoice();
 	CButton *pChechBox = (CButton *)GetDlgItem(IDC_CHECK_BROADCAST_NEW);
 	pChechBox->SetCheck(m_bVoice);
-}
-
-BOOL CMainPage::IsAllowedToOpenSound()
-{
-	if (!m_bStreamOpenFlag || m_play_id == 0)
-	{
-		return FALSE;
-	}
-	return TRUE;
 }
