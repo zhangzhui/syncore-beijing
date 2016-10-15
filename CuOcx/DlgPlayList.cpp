@@ -374,6 +374,7 @@ void CDlgPlayList::OnButtonQuery()
 			int nSearchType = m_iSearchType; 	
 
 			BOOL bOK = st_vod_getFileList(hSession, (const char *)m_szGuid.GetBuffer(m_szGuid.GetLength()), nSearchType, m_vod_info.szVodID, &stStart, &stEnd, vectList);
+			m_szGuid.ReleaseBuffer();
 			if ( !bOK ) 
 			{
 				AfxMessageBox(_T("²éÑ¯Ê§°Ü,ÇëÖØÊÔ£¡"));
@@ -820,6 +821,7 @@ void CDlgPlayList::OnButtonQueryPic()
 				return;
 			}	
 			strncpy(szVodIp, (const char *)m_strVodIp.GetBuffer(m_strVodIp.GetLength()), sizeof(szVodIp) - 1);
+			m_strVodIp.ReleaseBuffer();
 
 			//////////////////////////////////////////////////////////////////////////
 			CSrvAddrInfo srvAddrinfo;	//3
@@ -828,6 +830,7 @@ void CDlgPlayList::OnButtonQueryPic()
 
 			CMainPage* pDlg = m_pMainPage;
 			sprintf(szServerIp, (LPSTR)(LPCSTR)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
+			pDlg->m_strServerIPAddr.ReleaseBuffer();
 
 			Assist::ParseDomain(szServerIp);
 			srvAddrinfo.lLocalCsgAddr.S_un.S_addr = inet_addr(szServerIp);
@@ -863,6 +866,7 @@ void CDlgPlayList::OnButtonQueryPic()
 			
 			int nSearchType = m_iSearchType;//GetSearchType();
 			BOOL bOK = st_vod_getFileList(hSession, (const char *)m_szGuid.GetBuffer(m_szGuid.GetLength()), nSearchType, m_vod_info.szVodID, &stStart, &stEnd, vectList);
+			m_szGuid.ReleaseBuffer();
 			//BOOL bOK = st_vod_getFileList(hSession, m_szGuid, nSearchType, &stStart, &stEnd, vectList);
 			if(!bOK)
 			{

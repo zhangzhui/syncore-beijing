@@ -257,6 +257,7 @@ void CMainPage::SetServerIPAddr(LPCTSTR strIPAddr)
 
 	char szServerIp[256]={0};
 	sprintf(szServerIp, (const char *)m_strServerIPAddr.GetBuffer(m_strServerIPAddr.GetLength()));
+	m_strServerIPAddr.ReleaseBuffer();
 	Assist::ParseDomain(szServerIp);
 	m_strServerIPAddr = szServerIp;
 }
@@ -637,6 +638,7 @@ void CMainPage::StopStream()
 	if (m_pVideoIns)                            
 	{
 		m_pVideoIns->Stop((LONG)this);
+//		g_VideoMng.ReleaseInstance(m_pVideoIns);
 		m_pVideoIns = NULL;
 	}
 	WaitForThreadStatus();
@@ -756,6 +758,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 					char *pText = new char[1024];
 					memset(pText, 0x00, 1024);
 					memcpy(pText, LPCTSTR(strDes.GetBuffer(strDes.GetLength())), strDes.GetLength());
+					strDes.ReleaseBuffer();
 					::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
 
 					::PostMessage(pDlg->GetSafeHwnd(), WM_CLOSE_VIDEO, NULL, NULL);
@@ -797,21 +800,25 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 		{
 			strLoadText="[系统消息]正在重新请求视频";
 			sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));
+			strLoadText.ReleaseBuffer();
 			char *pText1 = new char[1024];
 			memset(pText1, 0x00, 1024);
 			memcpy(pText1, LPCTSTR(strLoadText.GetBuffer(strLoadText.GetLength())), strLoadText.GetLength());
+			strLoadText.ReleaseBuffer();
 			::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText1), NULL);
             
 			BOOL bRet = pDlg->m_pVideoIns->Reconnect();
 			if(bRet)
 			{
 				strLoadText="[系统消息]重新请求视频成功";
-                sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));	
+                sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));
+				strLoadText.ReleaseBuffer();
 			}
 			else
 			{
 				strLoadText="[系统消息]等待重新连接";
-                sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));	
+                sprintf(szStatus, (const char *)strLoadText.GetBuffer(strLoadText.GetLength()));
+				strLoadText.ReleaseBuffer();
 			}
             TRACE(_T("-----------m_pVideoIns->Reconnect=-------%s\n"), szStatus);
 			nWaitTime = 3000;
@@ -820,6 +827,7 @@ UINT  CMainPage::Thread_Status(LPVOID lParam)
 			char *pText = new char[1024];
 			memset(pText, 0x00, 1024);
 			memcpy(pText, LPCTSTR(strLoadText.GetBuffer(strLoadText.GetLength())), strLoadText.GetLength());
+			strLoadText.ReleaseBuffer();
 			::PostMessage(pDlg->GetSafeHwnd(), WM_TEXTOUTOPERATION, WPARAM(pText), NULL);
 		}
 // 		pDlg->m_strNotiy.Format(_T("%s"), szText);
@@ -1398,6 +1406,7 @@ void CMainPage::ProcessCameraDirection()
 // 		ptz_control->speed = m_ctrlSpeed.GetPos() / 10; 
 		
 		strncpy(ptz_control->csgIp, (const char *)m_strServerIPAddr.GetBuffer(m_strServerIPAddr.GetLength()), sizeof(ptz_control->csgIp));
+		m_strServerIPAddr.ReleaseBuffer();
 		ptz_control->csgport =  m_nServerPort + PORT_CSG_INCREASE_NUM;
 		
 		sprintf(ptz_control->msgtype,"ControlPTZ");
@@ -1536,6 +1545,7 @@ void CMainPage::OnBtnLocalpic()
 		if (!m_strWorkDir.IsEmpty())
 		{
 			sprintf(szPath, "%s", m_strWorkDir.GetBuffer(m_strWorkDir.GetLength()));
+			m_strWorkDir.ReleaseBuffer();
 		}
 		else
 		{
@@ -1901,8 +1911,8 @@ void CMainPage::OnDisplayAllDeviceMatchCameraID(WPARAM wParam, LPARAM lParam)
 	}
 
 	//给用户显示的一个对话框
-	CSelectCameraDlg dlg(this);
-	dlg.DoModal();
+	//CSelectCameraDlg dlg(this);
+	//dlg.DoModal();
 }
 
 void CMainPage::OnBeginMonitor(WPARAM wParam, LPARAM lParam)

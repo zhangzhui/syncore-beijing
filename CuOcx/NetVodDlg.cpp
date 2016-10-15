@@ -141,6 +141,7 @@ void CNetVodDlg::OnButtonPlay()
 		return;
 	}
 	sprintf(szServerIp, (const char *)pDlg->m_strServerIPAddr.GetBuffer(pDlg->m_strServerIPAddr.GetLength()));
+	pDlg->m_strServerIPAddr.ReleaseBuffer();
 	Assist::ParseDomain(szServerIp);
 	
 
@@ -178,10 +179,12 @@ void CNetVodDlg::OnButtonPlay()
 	if (m_bVodType == TRUE)
 	{
 		m_hVideo = st_vod_openVideo(m_hSession, m_bVodType, m_vod_info.szVodID, LPCSTR(m_strFileName.GetBuffer(m_strFileName.GetLength())));
+		m_strFileName.ReleaseBuffer();
 	}
 	else
 	{
 		m_hVideo = st_vod_openVideo(m_hSession, FALSE, LPCSTR(m_guInfo.PUID), LPCSTR(m_strFileName.GetBuffer(m_strFileName.GetLength())));
+		m_strFileName.ReleaseBuffer();
 	}
 
 	if(m_hVideo == NULL)

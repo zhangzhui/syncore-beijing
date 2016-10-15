@@ -119,6 +119,7 @@ BOOL CFileDownloadDlg::OnInitDialog()
 		CDlgPlayList* pPlayList = (CDlgPlayList*)GetParent();
 		CMainPage* pSDKDlg = (CMainPage*)pPlayList->GetMainPage();
 		sprintf(szServerIp,(LPSTR)(LPCSTR)pSDKDlg->m_strServerIPAddr.GetBuffer(pSDKDlg->m_strServerIPAddr.GetLength()));
+		pSDKDlg->m_strServerIPAddr.ReleaseBuffer();
 		Assist::ParseDomain(szServerIp);
 
 		//theApp.ParseDomain(szServerIp);
@@ -139,6 +140,7 @@ BOOL CFileDownloadDlg::OnInitDialog()
 		else if(FILETYPE_REC_VOD == m_nFrontOrCen || FILETYPE_PIC_VOD == m_nFrontOrCen)
 		{
 			strncpy(srvAddrinfo.strDevDomainID, (LPSTR)(LPCSTR)m_strMsuDomainID.GetBuffer(m_strMsuDomainID.GetLength()), VOD_MAX_ID_LEN);
+			m_strMsuDomainID.ReleaseBuffer();
 		}
 
 
@@ -163,10 +165,12 @@ BOOL CFileDownloadDlg::OnInitDialog()
 			if(FILETYPE_REC_PU == m_nFrontOrCen|| FILETYPE_PIC_PU == m_nFrontOrCen)
 			{
 				hVideo = st_vod_openVideo(hSession, FALSE, LPCSTR(m_strPuid.GetBuffer(m_strPuid.GetLength())), LPCSTR(m_strFile.GetBuffer(m_strFile.GetLength())));
+				m_strPuid.ReleaseBuffer();
 			}
 			else if(FILETYPE_REC_VOD == m_nFrontOrCen || FILETYPE_PIC_VOD == m_nFrontOrCen )
 			{
 				hVideo = st_vod_openVideo(hSession, TRUE, LPCSTR(m_strMsuID.GetBuffer(m_strMsuID.GetLength())), LPCSTR(m_strFile.GetBuffer(m_strFile.GetLength())));
+				m_strMsuID.ReleaseBuffer();
 			}
 			else
 			{
@@ -193,6 +197,7 @@ BOOL CFileDownloadDlg::OnInitDialog()
 				Info.lpFunc  = CallBack_VodDownLaod;
 
 				st_vod_attachToFile(m_hVideo, m_guInfo.lManufactType, LPCSTR(m_strFileSave.GetBuffer(m_strFileSave.GetLength())));
+				m_strFileSave.ReleaseBuffer();
 				st_vod_registerCallback(hVideo, Info);
 				st_vod_setDownload(hVideo);
 				st_vod_play(hVideo);
