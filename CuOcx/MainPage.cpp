@@ -2304,6 +2304,23 @@ void CMainPage::OnCheckVideoNew()
 
 	pChechBox->SetCheck(m_bOpenVideo);
 	UpdateNewCheckBtnStatus();
+
+	CWnd *pVoice = GetDlgItem(IDC_CHECK_VOICE_NEW);
+	pVoice->EnableWindow(TRUE);
+	CWnd *pBroadcast = GetDlgItem(IDC_CHECK_BROADCAST_NEW);
+	pBroadcast->EnableWindow(TRUE);
+	if (m_bOpenVideo)
+	{
+		CString cameraName = m_GuInfo.GUName;
+		if (cameraName.Find(_T("¾®Ç°")) != -1)
+		{
+			pBroadcast->EnableWindow(FALSE);
+		}
+		else if (cameraName.Find(_T("¾®ºó")) != -1)
+		{
+			pVoice->EnableWindow(FALSE);
+		}
+	}
 }
 
 void CMainPage::OnCheckVoiceNew()
