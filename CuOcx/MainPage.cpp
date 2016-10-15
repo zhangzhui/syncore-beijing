@@ -1280,6 +1280,11 @@ void CMainPage::OnBtnReplay()
     {
 		m_dlgPlayList.Create(CDlgPlayList::IDD, this);
     }
+
+	if (m_time == 0)
+	{
+		m_time = CTime::GetCurrentTime();
+	}
 	
 	m_dlgPlayList.SetTime(m_time);
 	m_dlgPlayList.SetWorkDir(m_strWorkDir);
