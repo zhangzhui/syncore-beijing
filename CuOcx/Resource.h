@@ -44,6 +44,12 @@
 #define IDC_LIST_OP                     228
 #define IDC_LIST_RESULT                 230
 #define IDC_COMBO_DEVICE                231
+#define IDC_CHECK_VIDEO_NEW             232
+#define IDC_CHECK_VOICE_NEW             233
+#define IDC_CHECK_CAPTURE_NEW           234
+#define IDC_CHECK_RECORD_NEW            235
+#define IDC_CHECK_PLAYBACK_NEW          236
+#define IDC_CHECK_BROADCAST_NEW         237
 #define IDC_BUTTON_STOP                 1008
 #define IDC_BUTTON_LENS1                1017
 #define IDC_BUTTON_LENS2                1018
@@ -97,7 +103,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        203
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         232
+#define _APS_NEXT_CONTROL_VALUE         238
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

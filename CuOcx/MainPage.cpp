@@ -1967,6 +1967,21 @@ void CMainPage::OnSize(UINT nType, int cx, int cy)
 	int iPix = 17;
 	CRect rc;
 	//ÓëÓÒ±ß¿ò¾àÀëºãÎª7ÏñËØµÄ¿Ø¼þ
+	UINT ui_7pixToRightNew[] = {IDC_CHECK_VIDEO_NEW, IDC_CHECK_VOICE_NEW, IDC_CHECK_CAPTURE_NEW, IDC_CHECK_RECORD_NEW, IDC_CHECK_PLAYBACK_NEW, IDC_CHECK_BROADCAST_NEW};
+	iCnt = sizeof(ui_7pixToRightNew) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		CWnd *pWnd = GetDlgItem(ui_7pixToRightNew[i]);
+		if (pWnd && pWnd->GetSafeHwnd())
+		{
+			pWnd->GetWindowRect(&rc);
+			ScreenToClient(&rc);
+			iOffset = cx - iPix - rc.right;
+			rc.OffsetRect(iOffset, 0);
+			pWnd->MoveWindow(rc);
+		}
+	}
+	
 	UINT ui_7pixToRight[] = {IDC_STATIC_DEVICE, IDC_COMBO_DEVICE, IDC_BTN_CLOSE_VIDEO,
 						IDC_BTN_OPENVOICE, IDC_BTN_LOCALPIC, IDC_BTN_LOCALSOUNDRECORD, IDC_LIST_OP};
 	iCnt = sizeof(ui_7pixToRight) / sizeof(UINT);
@@ -2058,6 +2073,14 @@ void CMainPage::InVisibleCtrls()
 	for (int i = 0; i < iCnt; i++)
 	{
 		GetDlgItem(uiCtrlsID[i])->ShowWindow(SW_HIDE);
+	}
+
+	UINT uiOldControllerID[] = {IDC_BTN_OPEN_VIDEO, IDC_BTN_CLOSE_VIDEO, IDC_BTN_OPENSOUND, IDC_BTN_OPENVOICE, IDC_BTN_REMOTE_PIC, IDC_BTN_LOCALPIC, IDC_BTN_LOCALRECORD, IDC_BTN_LOCALSOUNDRECORD, IDC_BTN_REPLAY};
+
+	iCnt = sizeof(uiOldControllerID) / sizeof(UINT);
+	for (i = 0; i < iCnt; i++)
+	{
+		GetDlgItem(uiOldControllerID[i])->ShowWindow(SW_HIDE);
 	}
 }
 
